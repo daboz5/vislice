@@ -1,0 +1,100 @@
+.Login {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.screen {
+    position: absolute;
+    z-index: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(150, 150, 150, 0.3)
+}
+
+/*BUTTON*/
+
+.loginButton-box {
+    position: absolute;
+    z-index: 1;
+    top: 2vh;
+    right: 2vw;
+    height: 75px;
+    width: 75px;
+}
+
+.loginButon {
+    font-size: 40px;
+    height: 75px;
+    width: 75px;
+    border: 5px solid black;
+    border-radius: 50px;
+    background-color: gold;
+}
+
+/*MENU*/
+
+.loginMenu-box {
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    align-items: center;
+    margin: 0 auto;
+    padding: 20px 0;
+    width: 400px;
+    border-radius: 15px;
+    background-color: rgb(144, 144, 144);
+}
+
+.loginMenu {
+    margin: 0 auto;
+}
+
+h4 {
+    margin: 5px auto 15px;
+    font-size: 27px;
+}
+
+.inputText {
+    margin: 10px 0 5px;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.inputField {
+    display: block;
+    margin: 10px auto 0;
+    padding: 5px 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/*POPUPs*/
+
+.error {
+    width: 300px;
+    margin: 20px auto 15px;
+    color: rgb(255, 50, 50);
+    font-size: 19px;
+    font-weight: 600;
+    text-align: left;
+    text-shadow: 0 0 3px black, 0 0 4px black, 0 0 5px black;
+}
+
+.popUp {
+    color: white;
+    font-size: 19px;
+    font-weight: 600;
+    text-shadow: 0 0 3px black, 0 0 4px black, 0 0 5px black;
+}
+
+/*USER INFO*/
+.userInfo {
+    font-size: 25px;
+    font-weight: 600;
+}
