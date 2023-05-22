@@ -1,0 +1,79 @@
+.accPage {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    font-size: 23px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/*SETTINGS*/
+
+.settingsBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50vw;
+}
+
+h4 {
+    font-size: 25px;
+    margin: 0;
+    padding: 20px 0 0;
+}
+
+.changeAvatarBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px auto 0;
+}
+
+.avatarBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 150px;
+    width: 150px;
+    max-height: 100%;
+    max-width: 100%;
+    border: 10px solid black;
+    border-radius: 50%;
+    background-size: 100% 100%;
+}
+
+.profilkaDef {
+    max-height: 75%;
+    max-width: 75%;
+}
+
+.buttonBox {
+    display: flex;
+    justify-content: space-evenly;
+    width: 250px;
+}
+
+input {
+    display: block;
+    height: 20px;
+    width: 240px;
+    margin: 10px auto 0;
+    padding: 5px 10px;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border-radius: 5px;
+}
+
+/*INFO*/
+
+.infoBox {
+    width: 50vw;
+}
+
+.info {
+    font-size: 23px;
+    font-weight: 600;
+}

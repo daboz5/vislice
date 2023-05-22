@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+RouterProvider {
+  position: absolute;
+}
+
+a img, :link img, :visited img {
+  border: 0;
+}

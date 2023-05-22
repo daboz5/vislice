@@ -1,0 +1,40 @@
+.Game {
+  z-index: 0;
+  text-align: center;
+}
+
+h1 {
+  font-size: 40px;
+  margin-top: 5vh;
+}
+
+h3 {
+  font-size: 30px;
+  margin: 0;
+}
+
+p {
+  font-size: 22px;
+}
+
+button {
+  font-size: 20px;
+}
+
+.letters-box {
+  display: flex;
+  justify-content: center;
+}
+
+.letters {
+  font-size: 20px;
+  font-weight: 700;
+  height: 30px;
+  width: 20px;
+  margin: 5px;
+  border-bottom: 3px solid black;
+}
+
+.image {
+  max-height: 50vh;
+}
