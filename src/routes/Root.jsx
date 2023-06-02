@@ -7,27 +7,17 @@ export const MenuContext = createContext(null);
 const Root = () => {
 
   const [menuState, setMenuState] = useState(false);
-  const [location, setLocation] = useState("/account");
-  const [accPic, setAccPic] = useState(null);
-  const [accInfo, setAccInfo] =
-    useState({
-      name: "default",
-      email: "default",
-      avatar: null,
-      wins: 0,
-      loses: 0
-    });
 
   return (
     <>
-      <MenuContext.Provider value={{menuState, setMenuState, accInfo, setAccInfo, location, setLocation, accPic}}>
+      <MenuContext.Provider value={{menuState, setMenuState}}>
         <LogMenu/>
       </MenuContext.Provider>
       
       <main id="app">
-      <MenuContext.Provider value={{menuState, accPic, setAccPic}}>
-        <Outlet/>
-      </MenuContext.Provider>
+        <MenuContext.Provider value={{menuState}}>
+          <Outlet/>
+        </MenuContext.Provider>
       </main>
     </>
   );

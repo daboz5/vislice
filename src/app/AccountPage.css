@@ -57,7 +57,7 @@ h4 {
 
 input {
     display: block;
-    height: 20px;
+    height: 35px;
     width: 240px;
     margin: 10px auto 0;
     padding: 5px 10px;
@@ -74,6 +74,7 @@ input {
 }
 
 .info {
+    margin: 10px auto;
     font-size: 23px;
-    font-weight: 600;
+    font-weight: 700;
 }

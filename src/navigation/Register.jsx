@@ -1,5 +1,5 @@
 import Button from '../app/Button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye  } from '@fortawesome/free-solid-svg-icons'
 
@@ -15,6 +15,23 @@ const Register = () => {
   const [show, setShow] = useState(false);
 
   const handlePasswordShow = () => {setShow(!show)};
+
+  const eventListener = (event) => {
+    if (
+      event.key === "Enter" &&
+      passInput1 !== "" &&
+      passInput2 !== "" &&
+      emailInput !== ""
+    ) {
+      console.log(event.key)
+        handleCreateAcc(event)
+    }
+  }
+  
+  useEffect(() => {
+    document.addEventListener("keydown", eventListener);
+    return () => document.removeEventListener("keydown", eventListener);
+  })
 
   const handleReset = () => {
     setEmailError(null);
@@ -119,11 +136,8 @@ const Register = () => {
                   style={{color: "#000000", fontSize: 18, marginTop: 8}}
                   onClick={handlePasswordShow} />
 
-              {passwordError &&
-                  <p className="error">
-                      {passwordError}</p>}
             </div>
-
+            
                 {passwordError &&
                   <p className="error">
                     {passwordError}</p>}

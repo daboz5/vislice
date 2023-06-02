@@ -1,26 +1,25 @@
-import { useState, useEffect, useContext } from 'react';
-import { MenuContext } from './Root';
+import { useState, useEffect, useCallback } from 'react';
+import useAppStore from '../Store.ts';
 import '../app/Game.css';
 
 const Game = () => {
-  const {menuState} = useContext(MenuContext);
   const [life, setLife] = useState(7);
   const [word, setWord] = useState("");
   const [tried, setTried] = useState("");
   const [found, setFound] = useState([]);
   const [won, setWon] = useState(false);
   const [lost, setLost] = useState(false);
+
+  const menuState = useAppStore(state => state.menuState);
   
   useEffect(() => {
     handleClick();
   }, []);
-  
-  useEffect(() => {
-    document.addEventListener("keydown", eventListener);
-    return () => document.removeEventListener("keydown", eventListener);
-  }, [word, tried, life]);
 
-  const eventListener = (event) => {
+  const eventListener = useCallback((event) => {
+    if (menuState || lost || won) {
+      return
+    }
     let lowerKey = event.key.toLowerCase()
 
     let regEx1 = /..|[\W]|\d/
@@ -44,7 +43,7 @@ const Game = () => {
     let wordHasLetter = word.indexOf(lowerKey);
     let checkForRepeats = tried.split("").indexOf(lowerKey);
 
-    if (checkForRepeats === -1 && testsResult && !menuState && !lost && !won) {
+    if (checkForRepeats === -1 && testsResult) {
 
       if (wordHasLetter < 0 && life > 0) {
         if (tried.length === 0) {
@@ -80,7 +79,12 @@ const Game = () => {
         }
       }
     }
-  }
+  }, [word, tried, menuState])
+
+  useEffect(() => {
+    document.addEventListener("keydown", eventListener);
+    return () => document.removeEventListener("keydown", eventListener);
+  }, [eventListener]);
 
   
   const fetchWord = async () => {
@@ -122,7 +126,7 @@ const Game = () => {
             <div className="letters-box">{letters}</div>
         </div>
         <br />
-        <button onClick={handleClick}>Izberi besedo</button>
+        <button onClick={handleClick}>Nova beseda</button>
         <p>Že uporabljeno: <b>{tried}</b></p>
         <div>
             {won === false ? img : imgWin}

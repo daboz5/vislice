@@ -1,5 +1,5 @@
-import { useState, useContext } from 'react';
-import { MenuContext } from '../routes/Root';
+import { useState } from 'react';
+import useAppStore from '../Store.ts';
 import Login from './Login';
 import Register from './Register';
 import Button from '../app/Button';
@@ -7,21 +7,17 @@ import './LogMenu.css';
 
 const LogMenu = () => {
 
-  const {menuState, setMenuState, accPic} = useContext(MenuContext);
+  const { menuState, changeMenuState, profilePic } = useAppStore();
 
   const [registration, setRegistration] = useState(false);
-  const [regChange, setRegChange] = useState(<>Potrebuješ nov račun? Klikni tukaj.</>);
+  const [regString, setRegString] = useState(<>Potrebuješ nov račun? Klikni tukaj.</>);
   const [online, setOnline] = useState(false);
 
-  const handleChangeMenuState = () => {
-    setMenuState(!menuState)
-  }
-  
   const handleChangeMenuType = () => {
     if (registration) {
-      setRegChange(<>Potrebuješ nov račun? Klikni tukaj.</>);
+      setRegString(<>Potrebuješ nov račun? Klikni tukaj.</>);
     } else {
-      setRegChange(<>Že imaš račun? Klikni tukaj.</>);
+      setRegString(<>Že imaš račun? Klikni tukaj.</>);
     }
     setRegistration(!registration);
   }
@@ -31,21 +27,20 @@ const LogMenu = () => {
   }
 
   const btn = (
-    <div className="loginButton">
-      {accPic ?
-        <img
+    <div className="loginButton"
+      onClick={() => changeMenuState()}
+      ><img
         className="loginButtonImage"
-        src={"user-astronaut-solid.svg"}
-        onClick={handleChangeMenuState}
+        src={online ?
+          profilePic :
+          "user-astronaut-solid.svg"
+        }
+        style={online ?
+          {maxHeight: "100%", maxWidth: "100%"} :
+          {maxHeight: "75%", maxWidth: "75%"}
+        }
         alt="Slika profila"
-        /> :
-        <img
-          className="loginButtonImageDef"
-          src={"user-astronaut-solid.svg"}
-          onClick={handleChangeMenuState}
-          alt="Slika profila"
-        />
-      }
+      />
     </div>
   );
       
@@ -53,20 +48,20 @@ const LogMenu = () => {
     (<div className="Login">
       <div
         className="screen"
-        onClick={handleChangeMenuState}>
+        onClick={() => changeMenuState()}>
       </div>
       {btn}
       <div className="loginMenu-box">
         {registration === false ?
         <Login
           online={online}
-          reportStatus={() => reportLoginStatus()}
+          reportLoginStatus={() => reportLoginStatus()}
         /> :
         <Register />}
         <Button
           button="subtle"
           onClick={handleChangeMenuType}>
-          {regChange}
+          {regString}
         </Button>
       </div>
     </div>) :

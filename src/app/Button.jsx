@@ -1,8 +1,8 @@
-import "./Button.css";
 import { Link } from 'react-router-dom';
+import "./Button.css";
 
 const Button = ({children, button, onClick, to, onChange}) => {
-    
+
     return (
         <div>
             {button === "img" ?
@@ -15,6 +15,7 @@ const Button = ({children, button, onClick, to, onChange}) => {
                         type="file"
                         className="previewImgBtnHide"
                         onChange={onChange}
+                        onClick={onClick}
                         accept="image/png, image/jpeg, image/webp">
                     </input>
                 </label>) :
@@ -28,7 +29,8 @@ const Button = ({children, button, onClick, to, onChange}) => {
                                         "button-normal"
                     }
                     to={to}
-                    onClick={onClick}   
+                    onClick={onClick}
+                    rel="noopener noreferrer"
                     >
                     {children}
                 </Link>
