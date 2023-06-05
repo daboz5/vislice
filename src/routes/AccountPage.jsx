@@ -1,7 +1,7 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
-import Button from "../app/Button";
 import useAppStore from '../Store.ts';
-import "../app/AccountPage.css"
+import "./AccountPage.css"
 
 const AccountPage = () => {
 
@@ -45,12 +45,12 @@ const AccountPage = () => {
             redirect: 'follow',
             credentials: "include"
         };
-/*
-        fetch("http://localhost:3000/auth/change-avatar", requestOptions)
+
+        await fetch("http://localhost:3000/auth/change-avatar", requestOptions)
         .then(response => response.json())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
-*/
+
         fetch("http://localhost:3000/auth/whoami", {credentials:"include"})
         .then(response => response.json())
         .then(result => console.log(result))
@@ -87,16 +87,24 @@ const AccountPage = () => {
                             style={{backgroundImage: `url(${picPreview})`}}>
                         </div>
                         <div className="buttonBox">
-                            <Button
-                                button="img"
-                                onChange={handleAvatarChange}
+                        <label>
+                            <span
+                                className="previewImgBtn"
                                 >Spremeni
-                            </Button>
-                            <Button
-                                button="normal"
-                                onClick={handleAvatarConfirmation}
-                                >Potrdi
-                            </Button>
+                            </span>
+                            <input
+                                type="file"
+                                className="previewImgBtnHide"
+                                onClick={handleAvatarChange}
+                                accept="image/png, image/jpeg, image/webp">
+                            </input>
+                        </label>
+                        <Link
+                            className="button-normal"
+                            onClick={handleAvatarConfirmation}
+                            rel="noopener noreferrer"
+                            >Potrdi
+                        </Link>
                         </div>
                     </div> :
                     <div className="changeAvatarBox">
@@ -107,11 +115,18 @@ const AccountPage = () => {
                                 alt="Slika profila"
                             />
                         </div>
-                        <Button
-                            button="img"
-                            onChange={handleAvatarChange}
-                            >Izberi sliko
-                        </Button>
+                        <label>
+                            <span
+                                className="previewImgBtn"
+                                >Izberi sliko
+                            </span>
+                            <input
+                                type="file"
+                                className="previewImgBtnHide"
+                                onClick={handleAvatarChange}
+                                accept="image/png, image/jpeg, image/webp">
+                            </input>
+                        </label>
                     </div>}
 
                 <h4>Ime računa</h4>
@@ -119,27 +134,37 @@ const AccountPage = () => {
                     placeholder={username}
                     onChange={(event) => setInputUsername(event.target.value)}/>
                 <div className="buttonBox">
-                    <Button button="normal">Spremeni</Button>
-                    {inputUsername &&
-                        <Button
-                        button="normal"
-                        onClick={handleUsername}
-                        >Potrdi
-                        </Button>
-                    }
+                    <Link
+                        className="button-normal"
+                        rel="noopener noreferrer"
+                        >Spremeni
+                    </Link>
+                        {inputUsername &&
+                            <Link
+                                className="button-normal"
+                                onClick={handleUsername}
+                                rel="noopener noreferrer"
+                                >Potrdi
+                            </Link>
+                        }
                 </div>
 
                 <h4>Geslo</h4>
                 <input onChange={(event) => setInputPassword(event.target.value)}/>
                 <div className="buttonBox">
-                    <Button button="normal">Spremeni</Button>
-                    {inputPassword &&
-                        <Button
-                            button="normal"
-                            onClick={handlePassword}
-                            >Potrdi
-                        </Button>
-                    }
+                    <Link
+                        className="button-normal"
+                        rel="noopener noreferrer"
+                        >Spremeni
+                    </Link>
+                        {inputUsername &&
+                            <Link
+                                className="button-normal"
+                                onClick={handlePassword}
+                                rel="noopener noreferrer"
+                                >Potrdi
+                            </Link>
+                        }
                 </div>
             </div>
             

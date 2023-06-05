@@ -1,9 +1,9 @@
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import useAppStore from '../Store.ts';
-import Login from './Login';
-import Register from './Register';
-import Button from '../app/Button';
-import './LogMenu.css';
+import useAppStore from '../Store.js';
+import Login from './Login.jsx';
+import Register from './Register.jsx';
+import './Menu.css';
 
 const LogMenu = () => {
 
@@ -13,7 +13,7 @@ const LogMenu = () => {
   const [regString, setRegString] = useState(<>Potrebuješ nov račun? Klikni tukaj.</>);
   const [online, setOnline] = useState(false);
 
-  const handleChangeMenuType = () => {
+  const changeMenuType = () => {
     if (registration) {
       setRegString(<>Potrebuješ nov račun? Klikni tukaj.</>);
     } else {
@@ -53,16 +53,18 @@ const LogMenu = () => {
       {btn}
       <div className="loginMenu-box">
         {registration === false ?
-        <Login
-          online={online}
-          reportLoginStatus={() => reportLoginStatus()}
-        /> :
-        <Register />}
-        <Button
-          button="subtle"
-          onClick={handleChangeMenuType}>
-          {regString}
-        </Button>
+          <Login
+            online={online}
+            reportLoginStatus={() => reportLoginStatus()}
+          /> :
+          <Register />
+        }
+        <Link
+          className="button-subtle"
+          onClick={changeMenuType}
+          rel="noopener noreferrer"
+          >{regString}
+        </Link>
       </div>
     </div>) :
     btn;

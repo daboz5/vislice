@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useState, createContext } from "react";
 import LogMenu from "../navigation/LogMenu";
+import './Root.css';
 
 export const MenuContext = createContext(null);
 

@@ -1,4 +1,4 @@
-import Button from '../app/Button';
+import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye  } from '@fortawesome/free-solid-svg-icons'
@@ -98,63 +98,73 @@ const Register = () => {
     const showPasswordIcon = show ? faEyeSlash : faEye;
 
     return sloError ?
-        (sloError &&
-          <div className='loginMenu'>{sloError}</div>) :
+      (sloError &&
+        <div className='loginMenu'>
+          {sloError}
+        </div>
+      ) :
 
-        (<form className="loginMenu">
-            <h4>Ustvari nov račun</h4>
+      <form className="loginMenu">
+        <h4>Ustvari nov račun</h4>
 
-            <p className='inputText'>Uporabniški email:</p>
-            <div>
-                <input
-                  className='inputField'
-                  onChange={(event) => setEmailInput(event.target.value)}/>
-                {emailError &&
-                  <p className="error">
-                    {emailError}</p>}
-            </div>
-            
-            <p className='inputText'>Dvakrat vpiši lokalno geslo:</p>
-            <div>
-                
-            <div>
-              <input
+        <p className='inputText'>Uporabniški email:</p>
+        <div>
+          <input
+            className='inputField'
+            onChange={(event) => setEmailInput(event.target.value)}
+          />
+          {emailError &&
+            <p className="error">
+              {emailError}
+            </p>
+          }
+        </div>
+        
+        <p
+          className='inputText'
+          >Dvakrat vpiši lokalno geslo:
+        </p>
+        <div>
+          <div>
+            <input
               type={show ?
-                  "text" :
-                  "password"}
+                "text" :
+                "password"}
               className='inputField'
-              onChange={(event) => setPassInput1(event.target.value)}/>
-              <input
-                  type={show ?
-                      "text" :
-                      "password"}
-                  className='inputField'
-                  onChange={(event) => setPassInput2(event.target.value)}/>
-              <FontAwesomeIcon
-                  className='eye'
-                  icon={showPasswordIcon}
-                  style={{color: "#000000", fontSize: 18, marginTop: 8}}
-                  onClick={handlePasswordShow} />
-
-            </div>
-            
-                {passwordError &&
-                  <p className="error">
-                    {passwordError}</p>}
-                {serverError &&
-                  <p className="error">
-                    {serverError}</p>}
-                {confirmator &&
-                  <p className="popUp">
-                    {confirmator}</p>}
-            </div>
-
-            <Button
-              button="normal"
-              onClick={handleCreateAcc}>
-                Ustvari račun
-            </Button>
-        </form>)
+              onChange={(event) => setPassInput1(event.target.value)}
+            />
+            <input
+              type={show ?
+                "text" :
+                "password"}
+              className='inputField'
+              onChange={(event) => setPassInput2(event.target.value)}
+            />
+            <FontAwesomeIcon
+              className='eye'
+              icon={showPasswordIcon}
+              style={{color: "#000000", fontSize: 18, marginTop: 8}}
+              onClick={handlePasswordShow}
+            />
+          </div>
+          {passwordError &&
+            <p className="error">
+              {passwordError}</p>}
+          {serverError &&
+            <p className="error">
+              {serverError}</p>}
+          {confirmator &&
+            <p className="popUp">
+              {confirmator}</p>}
+        </div>
+        <Link
+          className="button-normal"
+          onClick={handleCreateAcc}
+          rel="noopener noreferrer"
+          >Ustvari račun
+        </Link>
+        
+      </form>
 }
 
 export default Register;

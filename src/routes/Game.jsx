@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import useAppStore from '../Store.ts';
-import '../app/Game.css';
+import './Game.css';
 
 const Game = () => {
   const [life, setLife] = useState(7);

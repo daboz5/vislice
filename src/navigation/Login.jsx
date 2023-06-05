@@ -1,8 +1,7 @@
-import Button from '../app/Button';
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye  } from '@fortawesome/free-solid-svg-icons'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import useAppStore from '../Store.ts';
 
 const Login = (props) => {
@@ -201,7 +200,6 @@ const Login = (props) => {
     const accPath = "/account";
     const currentPath = window.location.pathname;
     const path = currentPath !== homePath ? homePath : accPath;
-    //debugger
     navigate(path);
   }
 
@@ -225,20 +223,20 @@ const Login = (props) => {
           {calcRatio(fakeACC.wins, fakeACC.loses)[1]}
         </p>
       </div>
-        
-        <Button className='link'
-          button="normal"
-          onClick={changeLocation}
-            >{window.location.pathname === "/" ?
-              "Uporabniški račun" :
-              "Vislice"}
-        </Button>
-        
-        <Button
-          button="normal"
-          onClick={handleLogout}>
-            Izpiši me
-        </Button>
+      <Link
+        className="button-normal link"
+        onClick={changeLocation}
+        rel="noopener noreferrer"
+        >{window.location.pathname === "/" ?
+          "Uporabniški račun" :
+          "Vislice"}
+      </Link>
+      <Link
+        className="button-normal"
+        onClick={handleLogout}
+        rel="noopener noreferrer"
+        >Izpiši me
+      </Link>
     </div>) :
       
     (<form className="loginMenu">    
@@ -265,7 +263,8 @@ const Login = (props) => {
           className='eye'
           icon={showPasswordIcon}
           style={{color: "#000000", fontSize: 18, marginTop: 8}}
-          onClick={handlePasswordShow} />
+          onClick={handlePasswordShow}
+        />
 
         {passwordError &&
           <p className="error">
@@ -278,13 +277,13 @@ const Login = (props) => {
         {sloError &&
           <p className="error">
             {sloError}</p>}
-  
-      <Button
-        className="loginBtn"
-        button="normal"
-        onClick={changeLocation}>
-          Vpiši me
-      </Button>
+
+      <Link
+        className="button-normal loginBtn"
+        onClick={changeLocation}
+        rel="noopener noreferrer"
+        >Vpiši me
+      </Link>
     </form>)
 }
 
