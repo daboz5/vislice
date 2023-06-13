@@ -1,41 +1,38 @@
-import { Link } from "react-router-dom";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import useAppStore from '../Store.ts';
+import apiURL from "../utils/api_url.ts";
 import "./AccountPage.css"
 
 const AccountPage = () => {
-
-    const { username, changeProfilePic, changeUsername } = useAppStore();
-
-    const [serverError, setServerError] = useState(null);
+    
+    const { username, profilePic, changeProfilePic, changeUsername } = useAppStore();
+    
     const [picPreview, setPicPreview] = useState(null);
     const [picFile, setPicFile] = useState(null);
     const [inputUsername, setInputUsername] = useState("");
-    const [inputPassword, setInputPassword] = useState("");
+    const [hoverLabel, setHoverLable] = useState(false);
+
     let pic = "user-astronaut-solid.svg";
 
     const handleAvatarChange = (event) => {
-        setPicFile(event.target.files[0]);
-        const imgPreview = URL.createObjectURL(event.target.files[0])
-        setPicPreview(imgPreview)
-    }
-    
-    const calcAvatarSize = () => {
-        const fileSize = picPreview.files[picPreview]
+        const file = event.target.files[0];
+        const fileSize = file.size
         const maxSize = 1000000;
-        console.log(fileSize, maxSize)
+
         if (fileSize > maxSize) {
-            alert(`Slika je prevelika, največja dovoljena velikost je ${fileSize}`)
+            toast.error(
+                `Največja dovoljena velikost je 1 Mb.
+                Priporočeno razmerje stranic je 1:1.`
+            )
         } else {
-            console.log("uspeh")
+            setPicFile(file);
+            const imgPreview = URL.createObjectURL(file);
+            setPicPreview(imgPreview);
         }
     }
     
-    const handleAvatarConfirmation = async (event) => {
-        event.preventDefault();
-        changeProfilePic(picPreview);
-        setPicPreview(null);
-        
+    const handleAvatarConfirmation = async () => {
         var formdata = new FormData();
         formdata.append("file", picFile);
 
@@ -46,129 +43,148 @@ const AccountPage = () => {
             credentials: "include"
         };
 
-        await fetch("http://localhost:3000/auth/change-avatar", requestOptions)
+        await fetch(apiURL + "/auth/change-avatar", requestOptions)
         .then(response => response.json())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
-
-        fetch("http://localhost:3000/auth/whoami", {credentials:"include"})
-        .then(response => response.json())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
+        .then(() => {
+            changeProfilePic(picPreview);
+            setPicPreview(null);
+        })
+        .catch(error => {
+            console.log(error);
+            toast.error = (
+                `Nekaj je šlo narobe.
+                Znova poskusite kasneje ali nas opozorite o napaki.`
+            );
+        });
     }
 
     const handleUsername = () => {
-        changeUsername();
-/*
-        fetch("http://localhost:3000/auth/change-avatar", requestOptions)
+        if (inputUsername.length < 3) {
+            toast.error(
+                `Uporabniško ime naj ima vsaj 3 znake.`
+            )
+        }
+
+        var requestOptions = {
+            method: 'POST',
+            //body: inputUsername,
+            redirect: 'follow',
+            credentials: "include"
+        };
+
+        fetch(apiURL + "/auth/!!!!!!!!!!!!!", requestOptions)
         .then(response => response.json())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
-*/
+        .then(result => {
+            console.log(result);
+            changeUsername(inputUsername);
+            document.getElementById("accNameInput").value = "";
+        })
+        .catch(error => {
+            console.log(error);
+            toast.error = (
+                `Nekaj je šlo narobe.
+                Znova poskusite kasneje ali nas opozorite o napaki.`
+            );
+        });
+
     };
 
-    const handlePassword = () => {
-/*
-        fetch("http://localhost:3000/auth/change-avatar", requestOptions)
-        .then(response => response.json())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
-*/
-    };
+    const handleMouseEnter = () => {
+        setHoverLable(true);
+    }
+    const handleMouseLeave = () => {
+        setHoverLable(false);
+    }
+    const hoverStyle = {boxShadow: "0 0 3px"}
 
     return (
         <div className="accPage">
             <div className="settingsBox">
                 <h4 alt="Slika profila">Profilna slika</h4>
-                {picPreview ?
-                    <div className="changeAvatarBox">
-                        <div
-                            className="avatarBox"
-                            style={{backgroundImage: `url(${picPreview})`}}>
-                        </div>
-                        <div className="buttonBox">
-                        <label>
-                            <span
-                                className="previewImgBtn"
-                                >Spremeni
-                            </span>
-                            <input
-                                type="file"
-                                className="previewImgBtnHide"
-                                onClick={handleAvatarChange}
-                                accept="image/png, image/jpeg, image/webp">
-                            </input>
-                        </label>
-                        <Link
-                            className="button-normal"
-                            onClick={handleAvatarConfirmation}
-                            rel="noopener noreferrer"
-                            >Potrdi
-                        </Link>
-                        </div>
-                    </div> :
+                    
                     <div className="changeAvatarBox">
                         <div className="avatarBox">
-                            <img
-                                className="profilkaDef"
-                                src={pic}
-                                alt="Slika profila"
-                            />
+                            {picPreview ?
+                                <img
+                                    src={picPreview}
+                                    style={{
+                                        maxWidth: "100%",
+                                        maxHeight: "100%"
+                                    }}
+                                    alt="Slika profila"
+                                /> :
+                                <img
+                                    src={profilePic ?
+                                        profilePic :
+                                        pic
+                                    }
+                                    style={profilePic ?
+                                        {
+                                            maxWidth: "100%",
+                                            maxHeight: "100%"
+                                        } :
+                                        {
+                                            maxWidth: "75%",
+                                            maxHeight: "75%"
+                                        }
+                                    }
+                                    alt="Nova slika profila"
+                                />
+                            }
                         </div>
-                        <label>
-                            <span
-                                className="previewImgBtn"
-                                >Izberi sliko
-                            </span>
-                            <input
-                                type="file"
-                                className="previewImgBtnHide"
-                                onClick={handleAvatarChange}
-                                accept="image/png, image/jpeg, image/webp">
-                            </input>
-                        </label>
-                    </div>}
+                        <div>
+                            <label
+                                className="button"
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
+                                style={hoverLabel ?
+                                    hoverStyle :
+                                    {}
+                                }
+                                htmlFor="picBtn"
+                                >Izberi
+                                <input
+                                    type="file"
+                                    id="picBtn"
+                                    className="buttonHide"
+                                    onChange={handleAvatarChange}
+                                    accept="image/png, image/jpeg, image/webp">
+                                </input>
+                            </label>
+                            {picPreview &&
+                                <button
+                                    className="button"
+                                    onClick={() => handleAvatarConfirmation()}
+                                    rel="noopener noreferrer"
+                                    style={{marginLeft: "10px"}}
+                                    >Potrdi
+                                </button>
+                            }
+                        </div>
+                    </div>
 
                 <h4>Ime računa</h4>
                 <input
+                    id="accNameInput"
                     placeholder={username}
-                    onChange={(event) => setInputUsername(event.target.value)}/>
-                <div className="buttonBox">
-                    <Link
-                        className="button-normal"
-                        rel="noopener noreferrer"
-                        >Spremeni
-                    </Link>
-                        {inputUsername &&
-                            <Link
-                                className="button-normal"
-                                onClick={handleUsername}
-                                rel="noopener noreferrer"
-                                >Potrdi
-                            </Link>
-                        }
-                </div>
+                    onChange={(event) => setInputUsername(event.target.value)}
+                />
+                <button
+                    className="button"
+                    rel="noopener noreferrer"
+                    >Spremeni
+                </button>
 
-                <h4>Geslo</h4>
-                <input onChange={(event) => setInputPassword(event.target.value)}/>
-                <div className="buttonBox">
-                    <Link
-                        className="button-normal"
-                        rel="noopener noreferrer"
-                        >Spremeni
-                    </Link>
-                        {inputUsername &&
-                            <Link
-                                className="button-normal"
-                                onClick={handlePassword}
-                                rel="noopener noreferrer"
-                                >Potrdi
-                            </Link>
-                        }
-                </div>
             </div>
             
             <div className="infoBox">
+                {username &&
+                    <div
+                        className="info"
+                        style={{fontSize: 30}}
+                        >{username}
+                    </div>
+                }
                 <div className="info">
                     Zmage: 0
                 </div>

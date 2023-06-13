@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye  } from '@fortawesome/free-solid-svg-icons'
+import apiURL from "../utils/api_url.ts";
 
 const Register = () => {
   const [emailError, setEmailError] = useState(null);
@@ -23,8 +23,7 @@ const Register = () => {
       passInput2 !== "" &&
       emailInput !== ""
     ) {
-      console.log(event.key)
-        handleCreateAcc(event)
+      handleCreateAcc(event)
     }
   }
   
@@ -45,15 +44,33 @@ const Register = () => {
       event.preventDefault();
       handleReset();
 
-      const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-      const emailCheck = emailRegex.test(emailInput);
-      const passRegex = /^(?=.*\d)(?=.*[a-z]|[A-Z])(?=.*[a-zA-Z]).{6,}$/g;
-      const passCheck = passRegex.test(passInput1);
       if (emailInput !== "" && passInput1 !== "" && passInput2 !== "") {
+        const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+        const emailCheck = emailRegex.test(emailInput);
+        const passRegex = /^(?=.*\d)(?=.*[a-z]|[A-Z])(?=.*[a-zA-Z]).{6,}$/g;
+        const passCheck = passRegex.test(passInput1);
+        
         if (!emailCheck | !passCheck) {
-          if (!emailCheck) {setEmailError(<>Neustrezen email. Prosimo, vnesite: &ensp;- primer@primer.kul</>)}
-          if (!passCheck) {setPasswordError(<>Neustrezno geslo. Prosimo, vnesite:<br />&ensp;- vsaj 6 znakov<br />&ensp;- vsaj ena črka in vsaj ena številka</>)}
+          if (!emailCheck) {
+            return setEmailError(
+              <>
+                Neustrezen epoštni naslov.
+              </>
+            )
+          }
+          if (!passCheck) {
+            return setPasswordError(
+              <>
+                Neustrezno geslo.<br/>
+                Ustrezno geslo vsebuje:<br/>
+                &ensp;- vsaj 6 znakov<br/>
+                &ensp;- vsaj eno črko<br/>
+                &ensp;- vsaj eno številko
+              </>
+            )
+          }
         }
+
         else if (passInput1 !== passInput2 ) {setPasswordError(<>Gesli se ne ujemata.</>)}
         
         else {
@@ -71,23 +88,41 @@ const Register = () => {
             redirect: 'follow'
           };
           
-          fetch("http://localhost:3000/auth/signup", requestOptions)
+          await fetch(apiURL + "/auth/signup", requestOptions)
             .then(response => response.json())
             .then(result => {
               if (!result.error) {
-                setConfirmator(<>Račun je bil uspešno ustvarjen.<br />Sedaj se lahko prijaviš.</>)
+                setConfirmator(
+                  <>
+                    Račun je bil uspešno ustvarjen.<br/>
+                    Sedaj se lahko prijaviš.
+                  </>
+                )
               } else {
-                throw new Error(result.message || setServerError(<>Nekaj je šlo narobe, poskusite kasneje.</>))
+                throw new Error(
+                  result.message ||
+                  setServerError(
+                    <>
+                      Nekaj je šlo narobe, poskusite kasneje.
+                    </>
+                  )
+                )
               }
             })
             .catch(error => {
-              let sloError = null
+              let sloError = null;
               switch(error.message) {
                 case ("Email in use"):
-                  sloError = <>Email je že v uporabi.</>
+                  sloError =
+                    <>
+                      Email je že v uporabi.
+                    </>
                   break
                 default:
-                  sloError = <>Nekaj je šlo narobe, poskusite znova kasneje ali nas opozorite o napaki.</>
+                  sloError =
+                    <>
+                      Nekaj je šlo narobe, poskusite znova kasneje ali nas opozorite o napaki.
+                    </>
               }
               setServerError(sloError);
             });
@@ -129,14 +164,16 @@ const Register = () => {
             <input
               type={show ?
                 "text" :
-                "password"}
+                "password"
+              }
               className='inputField'
               onChange={(event) => setPassInput1(event.target.value)}
             />
             <input
               type={show ?
                 "text" :
-                "password"}
+                "password"
+              }
               className='inputField'
               onChange={(event) => setPassInput2(event.target.value)}
             />
@@ -157,12 +194,12 @@ const Register = () => {
             <p className="popUp">
               {confirmator}</p>}
         </div>
-        <Link
-          className="button-normal"
-          onClick={handleCreateAcc}
+        <button
+          className="button"
+          onClick={(event) => handleCreateAcc(event)}
           rel="noopener noreferrer"
           >Ustvari račun
-        </Link>
+        </button>
         
       </form>
 }

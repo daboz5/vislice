@@ -1,17 +1,15 @@
-import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import useAppStore from '../Store.js';
+import useAppStore from '../Store.ts';
 import Login from './Login.jsx';
 import Register from './Register.jsx';
 import './Menu.css';
 
-const LogMenu = () => {
+const Menu = () => {
 
   const { menuState, changeMenuState, profilePic } = useAppStore();
 
   const [registration, setRegistration] = useState(false);
   const [regString, setRegString] = useState(<>Potrebuješ nov račun? Klikni tukaj.</>);
-  const [online, setOnline] = useState(false);
 
   const changeMenuType = () => {
     if (registration) {
@@ -21,21 +19,17 @@ const LogMenu = () => {
     }
     setRegistration(!registration);
   }
-  
-  const reportLoginStatus = () => {
-    setOnline(!online);
-  }
 
   const btn = (
     <div className="loginButton"
       onClick={() => changeMenuState()}
       ><img
         className="loginButtonImage"
-        src={online ?
+        src={profilePic ?
           profilePic :
           "user-astronaut-solid.svg"
         }
-        style={online ?
+        style={profilePic ?
           {maxHeight: "100%", maxWidth: "100%"} :
           {maxHeight: "75%", maxWidth: "75%"}
         }
@@ -45,7 +39,7 @@ const LogMenu = () => {
   );
       
   return menuState ?
-    (<div className="Login">
+    <div className="Login">
       <div
         className="screen"
         onClick={() => changeMenuState()}>
@@ -53,21 +47,19 @@ const LogMenu = () => {
       {btn}
       <div className="loginMenu-box">
         {registration === false ?
-          <Login
-            online={online}
-            reportLoginStatus={() => reportLoginStatus()}
-          /> :
+          <Login/> :
           <Register />
         }
-        <Link
-          className="button-subtle"
+        <button
+          className="button button-subtle"
           onClick={changeMenuType}
           rel="noopener noreferrer"
           >{regString}
-        </Link>
+        </button>
       </div>
-    </div>) :
+    </div> :
+    
     btn;
 }
 
-export default LogMenu;
+export default Menu;

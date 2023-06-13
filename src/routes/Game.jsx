@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
+import { toast } from 'react-hot-toast';
 import useAppStore from '../Store.ts';
+import apiURL from '../utils/api_url.ts';
 import './Game.css';
 
 const Game = () => {
   const [life, setLife] = useState(7);
   const [word, setWord] = useState("");
+  const [wordId, setWordId] = useState(0);
   const [tried, setTried] = useState("");
   const [found, setFound] = useState([]);
   const [won, setWon] = useState(false);
@@ -75,6 +78,7 @@ const Game = () => {
           let checkForWin = found.join("").indexOf(" ");
           if (checkForWin === -1) {
             setWon(true);
+            handleWin();
           }
         }
       }
@@ -86,21 +90,56 @@ const Game = () => {
     return () => document.removeEventListener("keydown", eventListener);
   }, [eventListener]);
 
-  
-  const fetchWord = async () => {
-    let fetchedWord = await fetch("http://localhost:3000/words/random");
-    let processedWord = await fetchedWord.json();
-    return processedWord.normalizedWord;
-  }
-
   const handleClick = async () => {
-    const randomWord = await fetchWord()
+    let Word = await fetch(apiURL + "/words/random")
+      .then(response => response.json());
+    let normalWord = Word.normalizedWord;
+    let idWord = Word.id;
+    console.log(idWord, normalWord)
     setLife(7);
-    setWord(randomWord);
-    setFound(randomWord.split("").map(el => " "));
+    setWord(normalWord);
+    setWordId()
+    setFound(normalWord.split("").map(el => " "));
     setTried("");
     setWon(false);
     setLost(false);
+
+    var requestOptions = {
+      method: 'GET',
+      redirect: 'follow',
+      credentials: "include"
+  };
+/*
+    await fetch(apiURL + "/guesses/me", requestOptions)
+      .then(response => response.json())
+      .then(result => console.log(result));*/
+  }
+
+  const handleWin = async () => {
+    var raw = JSON.stringify({
+      "wordId": wordId,
+      "guesses": [word]
+    });
+
+    var requestOptions = {
+        method: 'POST',
+        body: raw,
+        redirect: 'follow',
+        credentials: "include"
+    };
+
+    await fetch(apiURL + "/guesses", requestOptions)
+    .then(response => response.json())
+    .then((result) => {
+      console.log(result)
+    })
+    .catch(error => {
+        console.log(error);
+        toast.error = (
+            `Nekaj je šlo narobe.
+            Znova poskusite kasneje ali nas opozorite o napaki.`
+        );
+    });
   }
 
   let checkForWin = found.join("").indexOf(" ")
