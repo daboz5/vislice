@@ -98,7 +98,7 @@ const Game = () => {
     console.log(idWord, normalWord)
     setLife(7);
     setWord(normalWord);
-    setWordId()
+    setWordId(idWord)
     setFound(normalWord.split("").map(el => " "));
     setTried("");
     setWon(false);
@@ -109,16 +109,16 @@ const Game = () => {
       redirect: 'follow',
       credentials: "include"
   };
-/*
+
     await fetch(apiURL + "/guesses/me", requestOptions)
       .then(response => response.json())
-      .then(result => console.log(result));*/
+      .then(result => console.log(result));
   }
 
   const handleWin = async () => {
     var raw = JSON.stringify({
       "wordId": wordId,
-      "guesses": [word]
+      "guesses": tried.split(" ")
     });
 
     var requestOptions = {

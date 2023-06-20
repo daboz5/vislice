@@ -9,11 +9,12 @@ import apiURL from "../utils/api_url.ts";
 const Login = () => {
 
   let navigate = useNavigate();
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit } = useForm();
 
   const {
     username,
     online,
+    changeToken,
     changeUsername,
     changeProfilePic,
     changeOnline
@@ -31,7 +32,7 @@ const Login = () => {
 
   const eventListener = (event) => {
     if (!online && event.key === "Enter") {
-      
+      handleSubmit(onSubmit);
     }
   }
 
@@ -128,8 +129,9 @@ const Login = () => {
         return response.json()})
       .then(result => {
         if (!result.error) {
-          changeUsername(result.username);
-          changeProfilePic(result.avatar);
+          const token = result.access_token;
+          changeToken(token);
+
           changeOnline(true);
         } else {
           throw new Error(
@@ -234,56 +236,57 @@ const Login = () => {
       
     (<form
       onSubmit={handleSubmit(onSubmit)}
-      className="loginMenu">    
-        <h4>Vpis</h4>
-        <p className='inputText'>Uporabniški email:</p>
-          <input
-            className='inputField inputEmail'
-            {...register("logEmail", {
-              required: true,
-              minLength: 1
-            })}
-          />
-          
-        <p className='inputText'>Geslo:</p>
-          <input
-            type={showPass ?
-              "text" :
-              "password"
-            }
-            className='inputField inputPassword'
-            {...register("logPassword", {
-              required: true,
-              minLength: 1
-            })}
-          />
-            <FontAwesomeIcon
-            className='eye'
-            icon={showPasswordIcon}
-            style={{
-              color: "#000000",
-              fontSize: 18,
-              marginTop: 8
-            }}
-            onClick={handlePasswordShow}
-          />
+      className="loginMenu"
+      >
+      <h4>Vpis</h4>
+      <p className='inputText'>Uporabniški email:</p>
+        <input
+          className='inputField inputEmail'
+          {...register("logEmail", {
+            required: true,
+            minLength: 1
+          })}
+        />
+        
+      <p className='inputText'>Geslo:</p>
+        <input
+          type={showPass ?
+            "text" :
+            "password"
+          }
+          className='inputField inputPassword'
+          {...register("logPassword", {
+            required: true,
+            minLength: 1
+          })}
+        />
+        <FontAwesomeIcon
+          className='eye'
+          icon={showPasswordIcon}
+          style={{
+            color: "#000000",
+            fontSize: 18,
+            marginTop: 8
+          }}
+          onClick={handlePasswordShow}
+        />
 
-          {emailError &&
-            <p className="error">
-              {emailError}</p>}
-          {passwordError &&
-            <p className="error">
-              {passwordError}</p>}
-          {serverError &&
-            <p className="error">
-              {serverError}</p>}
+        {emailError &&
+          <p className="error">
+            {emailError}</p>}
+        {passwordError &&
+          <p className="error">
+            {passwordError}</p>}
+        {serverError &&
+          <p className="error">
+            {serverError}</p>}
 
-        <button
-          type="submit"
-          className="button loginBtn"
-          rel="noopener noreferrer"
-          >Vpiši me
-        </button>
+      <button
+        type="submit"
+        className="button loginBtn"
+        rel="noopener noreferrer"
+        >Vpiši me
+      </button>
     </form>)
 }
 

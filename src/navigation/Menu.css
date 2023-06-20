@@ -28,8 +28,8 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 2vh;
-    right: 2vw;
+    top: 30px;
+    right: 70px;
     height: 75px;
     width: 75px;
     overflow: hidden;
@@ -47,8 +47,9 @@
 
 .loginMenu-box {
     margin: 0 auto;
-    padding: 20px 0;
+    padding: 20px 70px;
     width: 400px;
+    max-width: 100%;
     border: 5px solid gold;
     border-radius: 15px;
     background-color: rgb(140, 140, 140);
@@ -74,10 +75,10 @@ h4 {
 
 .inputField {
     height: 35px;
-    width: 240px;
     font-size: 18px;
     font-weight: 600;
     letter-spacing: 0.05em;
+    width: 100%;
     border-radius: 5px;
 }
 
@@ -98,7 +99,7 @@ h4 {
 /*POPUPs*/
 
 .error {
-    margin: 0px auto 10px;
+    margin: 5px auto 10px;
     color: rgb(255, 50, 50);
     font-size: 19px;
     font-weight: 600;

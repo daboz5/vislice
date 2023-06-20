@@ -6,7 +6,13 @@ import "./AccountPage.css"
 
 const AccountPage = () => {
     
-    const { username, profilePic, changeProfilePic, changeUsername } = useAppStore();
+    const {
+        token,
+        username,
+        profilePic,
+        changeProfilePic,
+        changeUsername
+    } = useAppStore();
     
     const [picPreview, setPicPreview] = useState(null);
     const [picFile, setPicFile] = useState(null);
@@ -40,10 +46,13 @@ const AccountPage = () => {
             method: 'POST',
             body: formdata,
             redirect: 'follow',
-            credentials: "include"
+            credentials: "include",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         };
 
-        await fetch(apiURL + "/auth/change-avatar", requestOptions)
+        await fetch(apiURL + "/users/change-avatar", requestOptions)
         .then(response => response.json())
         .then(() => {
             changeProfilePic(picPreview);

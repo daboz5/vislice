@@ -10,7 +10,7 @@ export const MenuContext = createContext(null);
 
 const Root = () => {
 
-  const { changeUsername, changeProfilePic, changeOnline} = useAppStore();
+  const { token, changeUsername, changeProfilePic, changeOnline} = useAppStore();
 
   const [menuState, setMenuState] = useState(false);
 
@@ -21,7 +21,8 @@ const Root = () => {
           credentials: "include",
           headers: {
             Accept: "application/json",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
           }
       };
 
@@ -43,8 +44,10 @@ const Root = () => {
   }
 
   useEffect(() => {
-    checkWhoAmI();
-  }, [])
+    if (token) {
+      checkWhoAmI();
+    }
+  }, [token])
 
   return (
     <>
