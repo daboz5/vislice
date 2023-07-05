@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import reportWebVitals from './reportWebVitals';
+//import reportWebVitals from './reportWebVitals';
 
 import ErrorPage from './ErrorPage'; 
 import Root from './routes/Root';
@@ -16,21 +16,22 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
+        path: "/",
+        element: <Game />,
+      },
+      {
         path: "/account",
         element: <AccountPage />,
       },
-      {
-        path: "/",
-        element: <Game />,
-      }
     ],
   },
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+const rootId = document.getElementById('root')!;
+ReactDOM.createRoot(rootId).render(
   <React.StrictMode>
     <RouterProvider router={router} />
   </React.StrictMode>
 );
 
-reportWebVitals();
+//reportWebVitals(console.log);

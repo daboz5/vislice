@@ -1,16 +1,24 @@
 import { useState } from 'react';
-import useAppStore from '../Store.ts';
-import Login from './Login.jsx';
-import Register from './Register.jsx';
+import useAppStore from '../Store';
+import Login from './Login';
+import Register from './Register';
+import useLocalStorage from '../utils/useLocalStorage';
 import './Menu.css';
 
 const Menu = () => {
 
-  const { menuState, changeMenuState, profilePic } = useAppStore();
+  const { profilePic, menuOpened, switchMenuState } = useAppStore();
 
+  const { storeData } = useLocalStorage();
+  
   const [registration, setRegistration] = useState(false);
   const [regString, setRegString] = useState(<>Potrebuješ nov račun? Klikni tukaj.</>);
-
+  
+  const handleBtnClick = () => {
+    storeData("menuOpened", !menuOpened);
+    switchMenuState(!menuOpened);
+  }
+  
   const changeMenuType = () => {
     if (registration) {
       setRegString(<>Potrebuješ nov račun? Klikni tukaj.</>);
@@ -22,7 +30,7 @@ const Menu = () => {
 
   const btn = (
     <div className="loginButton"
-      onClick={() => changeMenuState()}
+      onClick={() => handleBtnClick()}
       ><img
         className="loginButtonImage"
         src={profilePic ?
@@ -38,11 +46,11 @@ const Menu = () => {
     </div>
   );
       
-  return menuState ?
+  return menuOpened ?
     <div className="Login">
       <div
         className="screen"
-        onClick={() => changeMenuState()}>
+        onClick={() => handleBtnClick()}>
       </div>
       {btn}
       <div className="loginMenu-box">

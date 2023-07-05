@@ -2,25 +2,35 @@ import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye  } from '@fortawesome/free-solid-svg-icons'
 import { useForm } from "react-hook-form";
-import apiURL from "../utils/api_url.ts";
+import useAppStore from '../Store';
+import useFetch from '../utils/useFetch';
 
 const Register = () => {
-  const [emailError, setEmailError] = useState(null);
-  const [passwordError, setPasswordError] = useState(null);
-  const [serverError, setServerError] = useState(null);
-  const [confirmator, setConfirmator] = useState(null);
-  const [show, setShow] = useState(false);
 
+  type useErr = {
+    email: JSX.Element | null;
+    password: JSX.Element | null;
+  }
+
+  const {
+    serverError,
+    cngServerError,
+    accConfirm
+  } = useAppStore();
+
+  const [ error, setError ] = useState<useErr>({email: null, password: null});
+  const [show, setShow] = useState(false);
   const handlePasswordShow = () => {setShow(!show)};
 
   const { register, handleSubmit } = useForm();
+
+  const { postFetch } = useFetch();
 
   const eventListener = (event) => {
     if (event.key === "Enter") {
       handleSubmit(onSubmit);
     }
   }
-
   
   useEffect(() => {
     document.addEventListener("keydown", eventListener);
@@ -28,9 +38,11 @@ const Register = () => {
   })
 
   const handleReset = () => {
-    setEmailError(null);
-    setConfirmator(null);
-    setServerError(null);
+    setError({
+      email: null,
+      password: null,
+    });
+    cngServerError(null);
   }
 
   const onSubmit = async (data) => {
@@ -41,84 +53,35 @@ const Register = () => {
     const passRegex = /^(?=.*\d)(?=.*[a-z]|[A-Z])(?=.*[a-zA-Z]).{6,}$/g;
     const passCheck = passRegex.test(data.logPassword1);
     
-    if (!emailCheck | !passCheck) {
+    if (!emailCheck || !passCheck) {
       if (!emailCheck) {
-        return setEmailError(
-          <>
-            Neustrezen epoštni naslov.
-          </>
-        )
+        error.email = <>Neustrezen epoštni naslov.</>;
+        return setError(error);
       }
       if (!passCheck) {
-        return setPasswordError(
+        error.password =
           <>
             Neustrezno geslo.<br/>
             Ustrezno geslo vsebuje:<br/>
             &ensp;- vsaj 6 znakov<br/>
             &ensp;- vsaj eno črko<br/>
             &ensp;- vsaj eno številko
-          </>
-        )
+          </>;
+        return setError(error);
       }
     }
 
     else if (data.logPassword1 !== data.logPassword2 ) {
-      setPasswordError(<>Gesli se ne ujemata.</>)
+      error.password = <>Gesli se ne ujemata.</>;
+      setError(error);
     }
       
     else {
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      var raw = JSON.stringify({
+      const input = {
         "email": data.logEmail,
         "password": data.logPassword1
-      });
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-      };
-      
-      await fetch(apiURL + "/auth/signup", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-          if (!result.error) {
-            setConfirmator(
-              <>
-                Račun je bil uspešno ustvarjen.<br/>
-                Sedaj se lahko prijaviš.
-              </>
-            )
-          } else {
-            throw new Error(
-              result.message ||
-              setServerError(
-                <>
-                  Nekaj je šlo narobe, poskusite kasneje.
-                </>
-              )
-            )
-          }
-        })
-        .catch(error => {
-          let errorMessage = null;
-          switch(error.message) {
-            case ("Email in use"):
-              errorMessage =
-                <>
-                  Email je že v uporabi.
-                </>
-              break
-            default:
-              errorMessage =
-                <>
-                  Nekaj je šlo narobe, poskusite znova kasneje ali nas opozorite o napaki.
-                </>
-          }
-          setServerError(errorMessage);
-        });
+      }
+      postFetch("/auth/signup", input);
     }
   }
 
@@ -134,12 +97,12 @@ const Register = () => {
         className='inputField inputEmail'
         {...register("logEmail", {
           required: true,
-          minLength: 1
+          minLength: 3
         })}
       />
-        {emailError &&
+        {error.email &&
           <p className="error">
-            {emailError}
+            {error.email}
           </p>
         }
       
@@ -176,15 +139,15 @@ const Register = () => {
         onClick={handlePasswordShow}
       />
 
-      {passwordError &&
+      {error.password &&
         <p className="error">
-          {passwordError}</p>}
+          {error.password}</p>}
       {serverError &&
         <p className="error">
           {serverError}</p>}
-      {confirmator &&
+      {accConfirm &&
         <p className="popUp">
-          {confirmator}</p>}
+          {accConfirm}</p>}
 
       <button
         className="button"

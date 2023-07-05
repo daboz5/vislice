@@ -1,28 +1,26 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { toast } from "react-hot-toast";
-import useAppStore from '../Store.ts';
-import apiURL from "../utils/api_url.ts";
+import useAppStore from '../Store';
+import useFetch from "../utils/useFetch";
 import "./AccountPage.css"
 
-const AccountPage = () => {
+export default function AccountPage () {
     
     const {
-        token,
         username,
         profilePic,
-        changeProfilePic,
-        changeUsername
     } = useAppStore();
     
-    const [picPreview, setPicPreview] = useState(null);
-    const [picFile, setPicFile] = useState(null);
-    const [inputUsername, setInputUsername] = useState("");
-    const [hoverLabel, setHoverLable] = useState(false);
+    const [ picPreview, setPicPreview ] = useState("");
+    const [ inputUsername, setInputUsername ] = useState("");
+    const [ hoverLabel, setHoverLable ] = useState(false);
 
-    let pic = "user-astronaut-solid.svg";
+    const { postFetch } = useFetch();
 
-    const handleAvatarChange = (event) => {
-        const file = event.target.files[0];
+    let defPic = "user-astronaut-solid.svg";
+
+    const handleAvatarChange = (event: any) => {
+        let file: File = event.target.files[0];
         const fileSize = file.size
         const maxSize = 1000000;
 
@@ -32,39 +30,10 @@ const AccountPage = () => {
                 Priporočeno razmerje stranic je 1:1.`
             )
         } else {
-            setPicFile(file);
             const imgPreview = URL.createObjectURL(file);
             setPicPreview(imgPreview);
+            console.log(imgPreview, typeof imgPreview, picPreview)
         }
-    }
-    
-    const handleAvatarConfirmation = async () => {
-        var formdata = new FormData();
-        formdata.append("file", picFile);
-
-        var requestOptions = {
-            method: 'POST',
-            body: formdata,
-            redirect: 'follow',
-            credentials: "include",
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        };
-
-        await fetch(apiURL + "/users/change-avatar", requestOptions)
-        .then(response => response.json())
-        .then(() => {
-            changeProfilePic(picPreview);
-            setPicPreview(null);
-        })
-        .catch(error => {
-            console.log(error);
-            toast.error = (
-                `Nekaj je šlo narobe.
-                Znova poskusite kasneje ali nas opozorite o napaki.`
-            );
-        });
     }
 
     const handleUsername = () => {
@@ -73,44 +42,15 @@ const AccountPage = () => {
                 `Uporabniško ime naj ima vsaj 3 znake.`
             )
         }
-
-        var requestOptions = {
-            method: 'POST',
-            //body: inputUsername,
-            redirect: 'follow',
-            credentials: "include"
-        };
-
-        fetch(apiURL + "/auth/!!!!!!!!!!!!!", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            console.log(result);
-            changeUsername(inputUsername);
-            document.getElementById("accNameInput").value = "";
-        })
-        .catch(error => {
-            console.log(error);
-            toast.error = (
-                `Nekaj je šlo narobe.
-                Znova poskusite kasneje ali nas opozorite o napaki.`
-            );
-        });
-
     };
 
-    const handleMouseEnter = () => {
-        setHoverLable(true);
-    }
-    const handleMouseLeave = () => {
-        setHoverLable(false);
-    }
     const hoverStyle = {boxShadow: "0 0 3px"}
 
     return (
         <div className="accPage">
             <div className="settingsBox">
-                <h4 alt="Slika profila">Profilna slika</h4>
-                    
+
+                <h4>Profilna slika</h4>
                     <div className="changeAvatarBox">
                         <div className="avatarBox">
                             {picPreview ?
@@ -125,7 +65,7 @@ const AccountPage = () => {
                                 <img
                                     src={profilePic ?
                                         profilePic :
-                                        pic
+                                        defPic
                                     }
                                     style={profilePic ?
                                         {
@@ -144,14 +84,11 @@ const AccountPage = () => {
                         <div>
                             <label
                                 className="button"
-                                onMouseEnter={handleMouseEnter}
-                                onMouseLeave={handleMouseLeave}
-                                style={hoverLabel ?
-                                    hoverStyle :
-                                    {}
-                                }
-                                htmlFor="picBtn"
-                                >Izberi
+                                onMouseEnter={() => {setHoverLable(true)}}
+                                onMouseLeave={() => {setHoverLable(false)}}
+                                style={hoverLabel ? hoverStyle : {}}
+                                htmlFor="picBtn">
+                                Izberi
                                 <input
                                     type="file"
                                     id="picBtn"
@@ -163,10 +100,10 @@ const AccountPage = () => {
                             {picPreview &&
                                 <button
                                     className="button"
-                                    onClick={() => handleAvatarConfirmation()}
+                                    onClick={() => postFetch("/users/change-avatar", profilePic)}
                                     rel="noopener noreferrer"
-                                    style={{marginLeft: "10px"}}
-                                    >Potrdi
+                                    style={{marginLeft: "10px"}}>
+                                    Potrdi
                                 </button>
                             }
                         </div>
@@ -180,8 +117,8 @@ const AccountPage = () => {
                 />
                 <button
                     className="button"
-                    rel="noopener noreferrer"
-                    >Spremeni
+                    rel="noopener noreferrer">
+                    Spremeni
                 </button>
 
             </div>
@@ -218,5 +155,3 @@ const AccountPage = () => {
         </div>
     )
 }
-
-export default AccountPage;

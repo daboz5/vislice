@@ -1,29 +1,32 @@
 import { useState, useEffect, useCallback } from 'react';
-import { toast } from 'react-hot-toast';
-import useAppStore from '../Store.ts';
-import apiURL from '../utils/api_url.ts';
+import apiURL from '../utils/api_url';
+import useFetch from '../utils/useFetch';
+import useLocalStorage from '../utils/useLocalStorage';
 import './Game.css';
 
-const Game = () => {
+export default function Game () {
   const [life, setLife] = useState(7);
   const [word, setWord] = useState("");
   const [wordId, setWordId] = useState(0);
   const [tried, setTried] = useState("");
-  const [found, setFound] = useState([]);
+  const [found, setFound] = useState<string[]>([]);
   const [won, setWon] = useState(false);
   const [lost, setLost] = useState(false);
 
-  const menuState = useAppStore(state => state.menuState);
+  const { getData } = useLocalStorage();
+  const menuOpened = getData("menuOpened");
+
+  const { postFetch } = useFetch();
   
   useEffect(() => {
     handleClick();
   }, []);
 
   const eventListener = useCallback((event) => {
-    if (menuState || lost || won) {
+    if (menuOpened || lost || won) {
       return
     }
-    let lowerKey = event.key.toLowerCase()
+    let lowerKey: string = event.key.toLowerCase();
 
     let regEx1 = /..|[\W]|\d/
     let regEx2 = /[čžš]/
@@ -63,9 +66,10 @@ const Game = () => {
       }
 
       else if (wordHasLetter >= 0) {
+        let newFound: string[] = found;
         for (let i = 0; arrayWord.length > i; i++) {
           if (arrayWord[i] !== found[i] && arrayWord[i] === lowerKey) {
-            found[i] = lowerKey;
+            newFound[i] = lowerKey;
           }
         }
         if (tried.length === 0) {
@@ -83,7 +87,7 @@ const Game = () => {
         }
       }
     }
-  }, [word, tried, menuState])
+  }, [word, tried, menuOpened])
 
   useEffect(() => {
     document.addEventListener("keydown", eventListener);
@@ -93,53 +97,24 @@ const Game = () => {
   const handleClick = async () => {
     let Word = await fetch(apiURL + "/words/random")
       .then(response => response.json());
-    let normalWord = Word.normalizedWord;
+    let normalWord: string = Word.normalizedWord;
     let idWord = Word.id;
-    console.log(idWord, normalWord)
+    //console.log(idWord, normalWord)
     setLife(7);
     setWord(normalWord);
     setWordId(idWord)
-    setFound(normalWord.split("").map(el => " "));
+    setFound(normalWord.split("").map(() => " "));
     setTried("");
     setWon(false);
     setLost(false);
-
-    var requestOptions = {
-      method: 'GET',
-      redirect: 'follow',
-      credentials: "include"
-  };
-
-    await fetch(apiURL + "/guesses/me", requestOptions)
-      .then(response => response.json())
-      .then(result => console.log(result));
   }
 
-  const handleWin = async () => {
-    var raw = JSON.stringify({
+  const handleWin = () => {
+    const input = {
       "wordId": wordId,
       "guesses": tried.split(" ")
-    });
-
-    var requestOptions = {
-        method: 'POST',
-        body: raw,
-        redirect: 'follow',
-        credentials: "include"
-    };
-
-    await fetch(apiURL + "/guesses", requestOptions)
-    .then(response => response.json())
-    .then((result) => {
-      console.log(result)
-    })
-    .catch(error => {
-        console.log(error);
-        toast.error = (
-            `Nekaj je šlo narobe.
-            Znova poskusite kasneje ali nas opozorite o napaki.`
-        );
-    });
+    }
+    postFetch("/guesses", input);
   }
 
   let checkForWin = found.join("").indexOf(" ")
@@ -162,7 +137,12 @@ const Game = () => {
         <p className="life-box">Življenje: <b>{life}</b></p>
         <div>
             <p>Iskana beseda je: {life < 1 && wordNotFound}</p>
-            <div className="letters-box">{letters}</div>
+            <div className="letters-box">
+              {word ?
+                letters :
+                "Povezave s serverjem ni bilo mogoče vzpostaviti."
+              }
+            </div>
         </div>
         <br />
         <button onClick={handleClick}>Nova beseda</button>
@@ -176,5 +156,3 @@ const Game = () => {
     </div>
   );
 }
-
-export default Game;

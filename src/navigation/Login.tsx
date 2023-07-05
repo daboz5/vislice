@@ -3,10 +3,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye  } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
-import useAppStore from '../Store.ts';
-import apiURL from "../utils/api_url.ts";
+import useAppStore from '../Store';
+import useFetch from "../utils/useFetch";
+import useLocalStorage from "../utils/useLocalStorage";
 
-const Login = () => {
+export default function Login () {
+
+  type useErr = {
+    email: JSX.Element | null;
+    password: JSX.Element | null;
+  }
 
   let navigate = useNavigate();
   const { register, handleSubmit } = useForm();
@@ -14,20 +20,25 @@ const Login = () => {
   const {
     username,
     online,
-    changeToken,
-    changeUsername,
-    changeProfilePic,
-    changeOnline
+    serverError,
+    cngUsername,
+    cngProfPic,
+    cngOnline,
+    cngServerError
   } = useAppStore();
-  
-  const [serverError, setServerError] = useState(null);
-  const [emailError, setEmailError] = useState(null);
-  const [passwordError, setPasswordError] = useState(null);
+
+  const { removeData } = useLocalStorage();
+
+  const [ error, setError ] = useState<useErr>({email: null, password: null});
   const [showPass, setShowPass] = useState(false);
 
+  const { postFetch } = useFetch();
+
   const handleReset = () => {
-    setEmailError(null);
-    setServerError(null);
+    cngUsername("");
+    cngProfPic("");
+    cngServerError(null);
+    cngOnline(false)
   }
 
   const eventListener = (event) => {
@@ -41,7 +52,7 @@ const Login = () => {
     return () => document.removeEventListener("keydown", eventListener);
   })
 
-  const calcRatio = (won, lost) => {
+  const calcRatio = (won:number, lost:number) => {
     if (won === 0 && lost === 0) {
       return ["Vaš račun nima zabeleženih iger."]
     }
@@ -80,7 +91,6 @@ const Login = () => {
   }
 
   const onSubmit = (data) => {
-    console.log(data)
     handleReset();
 
     const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
@@ -88,16 +98,13 @@ const Login = () => {
     const passRegex = /^(?=.*\d)(?=.*[a-z]|[A-Z])(?=.*[a-zA-Z]).{6,}$/g;
     const passCheck = passRegex.test(data.logPassword);
 
-    if (!emailCheck | !passCheck) {
+    if (!emailCheck || !passCheck) {
       if (!emailCheck) {
-        return setEmailError(
-          <>
-            Neustrezen epoštni naslov.
-          </>
-        )
+        error.email = <>Neustrezen epoštni naslov.</>
+        return setError(error)
       }
       if (!passCheck) {
-        return setPasswordError(
+        error.password =
           <>
             Neustrezno geslo.<br/>
             Ustrezno geslo vsebuje:<br/>
@@ -105,90 +112,19 @@ const Login = () => {
             &ensp;- vsaj eno črko<br/>
             &ensp;- vsaj eno številko
           </>
-        )
+        return setError(error)
       }
     }
 
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({
+    const input = {
       "email": data.logEmail,
       "password": data.logPassword
-    });
-
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow',
-    };
-
-    fetch((apiURL + "/auth/signin"), requestOptions)
-      .then(response => {
-        return response.json()})
-      .then(result => {
-        if (!result.error) {
-          const token = result.access_token;
-          changeToken(token);
-
-          changeOnline(true);
-        } else {
-          throw new Error(
-            result.message ||
-            setServerError(
-              <>
-                Nekaj je šlo narobe, poskusite kasneje.
-              </>
-            )
-          )
-        }
-      })
-      .catch(error => {
-        let sloError = null;
-        switch(error.message) {
-          case ("Invalid email or password"):
-            sloError =
-            <>
-              Email ali geslo sta napačna.
-            </>
-            break
-          case ("User not found"):
-            sloError =
-            <>
-              Email ali geslo sta napačna.
-            </>
-            break
-          default:
-            sloError =
-            <>
-              Nekaj je šlo narobe.<br/>
-              Poskusite kasneje ali nas opozorite o napaki.
-            </>
-        }
-        setServerError(sloError)
-      }
-    );
+    }
+    postFetch("/auth/signin", input);
   };
 
   const handleLogout = () => {
-    fetch((apiURL + "/auth/signout"))
-      .then(result => {
-        if (!result.error) {
-            handleReset();
-            changeUsername("");
-            changeProfilePic("");
-            changeOnline(false)
-          } else {
-            throw new Error(result.message || setServerError(<>Nekaj je šlo narobe, poskusite kasneje.</>))
-          }
-        })
-      .catch(error => {
-        console.log(error)
-        const serverError = <>Nekaj je šlo narobe.<br/> Znova poskusite kasneje ali nas opozorite o napaki.</>
-        setServerError(serverError)
-      }
-    );
+    removeData("token");
   }
 
   return online ?
@@ -244,7 +180,7 @@ const Login = () => {
           className='inputField inputEmail'
           {...register("logEmail", {
             required: true,
-            minLength: 1
+            minLength: 3
           })}
         />
         
@@ -271,12 +207,12 @@ const Login = () => {
           onClick={handlePasswordShow}
         />
 
-        {emailError &&
+        {error.email &&
           <p className="error">
-            {emailError}</p>}
-        {passwordError &&
+            {error.email}</p>}
+        {error.password &&
           <p className="error">
-            {passwordError}</p>}
+            {error.password}</p>}
         {serverError &&
           <p className="error">
             {serverError}</p>}
@@ -289,5 +225,3 @@ const Login = () => {
       </button>
     </form>)
 }
-
-export default Login;
