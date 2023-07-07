@@ -30,7 +30,7 @@ export default function Login () {
   const { removeData } = useLocalStorage();
 
   const [ error, setError ] = useState<useErr>({email: null, password: null});
-  const [showPass, setShowPass] = useState(false);
+  const [ showPass, setShowPass ] = useState(false);
 
   const { postFetch } = useFetch();
 
@@ -125,6 +125,7 @@ export default function Login () {
 
   const handleLogout = () => {
     removeData("token");
+    cngOnline(false);
   }
 
   return online ?

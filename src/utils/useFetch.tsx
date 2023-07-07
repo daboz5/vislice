@@ -4,7 +4,10 @@ import useLocalStorage from "./useLocalStorage";
 
 export default function useFetch () {
 
+    let log = console.log
+
     const {
+        cngId,
         cngUsername,
         cngProfPic,
         cngOnline,
@@ -20,10 +23,8 @@ export default function useFetch () {
         let requestOptions: RequestInit = {
             method: 'GET',
             redirect: 'follow',
-            credentials: "include",
             headers: {
               Accept: "application/json",
-              "Content-Type": "application/json",
               Authorization: token
             }
         };
@@ -33,7 +34,12 @@ export default function useFetch () {
             .then((result) => {
                 if (result.error) {
                     throw new Error(result.message)
+                } else if (path === "/auth/whoami" && result.message === "Unauthorized") {
+                    cngUsername("");
+                    cngProfPic("");
+                    cngOnline(false);
                 } else if (path === "/auth/whoami" && result.message !== "Unauthorized") {
+                    cngId(result.id)
                     cngUsername(result.username);
                     cngProfPic(result.avatar);
                     cngOnline(true);
@@ -41,55 +47,96 @@ export default function useFetch () {
             })
             .catch(error => {
                 console.log(error);
-                if (path === "/auth/whoami") {
-                    cngOnline(false);
-                }
             }
         );
     }
     
-    const postFetch = async (path: string, input: any) => {
+    const patchFetch = async (path: string, id:number, input:string) => {
         const tokenData = getData("token");
         const token = `Bearer ${tokenData}`;
-        let formdata = "";
+        let requestOptions: RequestInit = {
+            method: 'GET',
+            redirect: 'follow',
+            headers: {
+              Accept: "application/json",
+              Authorization: token
+            }
+        };
+
+        await fetch(apiURL + path, requestOptions)
+            .then(response => response.json())
+            .then((result) => {
+                if (result.error) {
+                    throw new Error(result.message)
+                } else if (path === "/users/{id}") {
+                    console.log("should work")
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            }
+        );
+    }
+
+    const postFetch = async (path: string, input: any) => {
+
+        let myBody;
         switch (path) {
             case "/guesses":
-                formdata = JSON.stringify({
+                myBody = JSON.stringify({
                     "wordId": input.wordId,
                     "guesses": input.guesses
                 });
                 break;
             case "/users/change-avatar":
-                formdata = JSON.stringify({
-                    "file": input,
-                  });
+                myBody = JSON.stringify({
+                    "file": input
+                });
                 break;
             case "/auth/signin":
-                formdata = JSON.stringify({
+                myBody = JSON.stringify({
                     "email": input.email,
                     "password": input.password
-                  });
+                });
                 break;
             case "/auth/signup":
-                formdata = JSON.stringify({
+                myBody = JSON.stringify({
                     "email": input.email,
                     "password": input.password
-                    });
+                });
                 break;
             default:
                 console.log("Unknown POST path.")
         }
         
+        const tokenData = getData("token");
+        const token = `Bearer ${tokenData}`;
+        let myHeaders;
+        switch (path) {
+            case "/guesses":
+                myHeaders = {"Authorization": token};
+                break;
+            case "/users/change-avatar":
+                myHeaders = {"Authorization": token};
+                break;
+            case "/auth/signin":
+                myHeaders = {"Content-Type": "application/json"};
+                break;
+            case "/auth/signup":
+                myHeaders = {"Content-Type": "application/json"};
+                break;
+            default:
+                console.log("Unknown POST path.")
+        }
+
         let requestOptions: RequestInit = {
             method: 'POST',
-            body: formdata,
+            body: myBody,
+            headers: myHeaders,
             redirect: 'follow',
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: token
-            }
         };
+
+        console.log(input, requestOptions)
 
         await fetch (apiURL + path, requestOptions)
             .then(response => response.json())
@@ -133,5 +180,5 @@ export default function useFetch () {
     }
     
 
-    return { getFetch, postFetch }
+    return { getFetch, postFetch, patchFetch }
 }

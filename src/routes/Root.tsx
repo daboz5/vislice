@@ -10,14 +10,14 @@ import './Root.css';
 export default function Root () {
 
   const { getData } = useLocalStorage();
-  const { switchMenuState } = useAppStore();
+  const { online, switchMenuState } = useAppStore();
   const { getFetch } = useFetch();
 
   useEffect(() => {
     let menuState = getData("menuOpened");
     switchMenuState(menuState ? menuState : false);
     getFetch("/auth/whoami");
-  }, []);
+  }, [online]);
 
   return (
     <>

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 type State = {
+    id: number,
     username: string,
     profilePic: string,
     online: boolean,
@@ -10,6 +11,7 @@ type State = {
 }
 
 type Action = {
+    cngId(neId: number): void,
     cngUsername(newUsername: string): void,
     cngProfPic(newProfPic: string): void,
     cngOnline(onlineState: boolean): void,
@@ -19,6 +21,11 @@ type Action = {
 }
 
 const useAppStore = create<State&Action>((set) => ({
+    id: -1,
+    cngId: (newId) => set(() => ({
+        id: newId
+    })),
+
     username: "",
     cngUsername: (newUsername) => set(() => ({
         username: newUsername

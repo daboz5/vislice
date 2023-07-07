@@ -7,15 +7,16 @@ import "./AccountPage.css"
 export default function AccountPage () {
     
     const {
+        id,
         username,
         profilePic,
     } = useAppStore();
-    
+
     const [ picPreview, setPicPreview ] = useState("");
     const [ inputUsername, setInputUsername ] = useState("");
     const [ hoverLabel, setHoverLable ] = useState(false);
 
-    const { postFetch } = useFetch();
+    const { postFetch, patchFetch } = useFetch();
 
     let defPic = "user-astronaut-solid.svg";
 
@@ -32,7 +33,6 @@ export default function AccountPage () {
         } else {
             const imgPreview = URL.createObjectURL(file);
             setPicPreview(imgPreview);
-            console.log(imgPreview, typeof imgPreview, picPreview)
         }
     }
 
@@ -41,6 +41,9 @@ export default function AccountPage () {
             toast.error(
                 `Uporabniško ime naj ima vsaj 3 znake.`
             )
+        } else {
+            const newName = "";
+            patchFetch("/users/", id, newName);
         }
     };
 
@@ -100,7 +103,7 @@ export default function AccountPage () {
                             {picPreview &&
                                 <button
                                     className="button"
-                                    onClick={() => postFetch("/users/change-avatar", profilePic)}
+                                    onClick={() => postFetch("/users/change-avatar", picPreview)}
                                     rel="noopener noreferrer"
                                     style={{marginLeft: "10px"}}>
                                     Potrdi
@@ -124,11 +127,11 @@ export default function AccountPage () {
             </div>
             
             <div className="infoBox">
-                {username &&
+                {id &&
                     <div
                         className="info"
                         style={{fontSize: 30}}
-                        >{username}
+                        >{username} : {id}
                     </div>
                 }
                 <div className="info">
