@@ -2,27 +2,22 @@ import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye  } from '@fortawesome/free-solid-svg-icons'
 import { useForm } from "react-hook-form";
+import { Err } from '../type';
 import useAppStore from '../Store';
 import useFetch from '../utils/useFetch';
 
-const Register = () => {
-
-  type useErr = {
-    email: JSX.Element | null;
-    password: JSX.Element | null;
-  }
+export default function Register () {
 
   const {
+    accConfirm,
     serverError,
-    cngServerError,
-    accConfirm
+    cngServerError
   } = useAppStore();
-
-  const [ error, setError ] = useState<useErr>({email: null, password: null});
-  const [show, setShow] = useState(false);
-  const handlePasswordShow = () => {setShow(!show)};
-
+  
   const { register, handleSubmit } = useForm();
+
+  const [ error, setError ] = useState<Err>({email: null, password: null});
+  const [ show, setShow ] = useState(false);
 
   const { postFetch } = useFetch();
 
@@ -136,7 +131,7 @@ const Register = () => {
         className='eye'
         icon={showPasswordIcon}
         style={{color: "#000000", fontSize: 18, marginTop: 8}}
-        onClick={handlePasswordShow}
+        onClick={() => setShow(!show)}
       />
 
       {error.password &&
@@ -159,5 +154,3 @@ const Register = () => {
     </form>
   )
 }
-
-export default Register;

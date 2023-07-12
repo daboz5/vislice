@@ -1,5 +1,4 @@
 .Game {
-  z-index: 0;
   text-align: center;
 }
 
@@ -10,20 +9,17 @@ h1 {
 
 h3 {
   font-size: 30px;
-  margin: 0;
+  margin: 10px 0 0;
 }
 
 p {
   font-size: 22px;
 }
 
-button {
-  font-size: 20px;
-}
-
-.letters-box {
+.lettersBox {
   display: flex;
   justify-content: center;
+  height: 50px;
 }
 
 .letters {
@@ -35,6 +31,18 @@ button {
   border-bottom: 3px solid black;
 }
 
+#newWordBtn {
+  font-size: 20px;
+  margin: 15px 0 0;
+  border-radius: 7px;
+  padding: 5px 7px;
+  transition: 0.2s;
+}
+
+#newWordBtn:hover {
+  box-shadow: 0 0 5px 2px black;
+}
+
 .image {
-  max-height: 50vh;
+  max-height: 45vh;
 }

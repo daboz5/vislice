@@ -9,14 +9,19 @@ import './Root.css';
 
 export default function Root () {
 
-  const { getData } = useLocalStorage();
+  const { getData, removeData } = useLocalStorage();
   const { online, switchMenuState } = useAppStore();
   const { getFetch } = useFetch();
-
+  
   useEffect(() => {
     let menuState = getData("menuOpened");
     switchMenuState(menuState ? menuState : false);
+    removeData("word");
+  }, []);
+  
+  useEffect(() => {
     getFetch("/auth/whoami");
+    getFetch("/guesses/me");
   }, [online]);
 
   return (

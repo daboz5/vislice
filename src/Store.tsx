@@ -1,27 +1,30 @@
 import { create } from 'zustand';
+import { Guess } from './type';
 
 type State = {
-    id: number,
+    id: number | null,
     username: string,
-    profilePic: string,
+    profPic: string,
+    guesses: Guess[] | [],
     online: boolean,
     menuOpened: boolean,
     serverError: JSX.Element | null,
-    accConfirm: JSX.Element | null
+    accConfirm: JSX.Element | null,
 }
 
 type Action = {
     cngId(neId: number): void,
     cngUsername(newUsername: string): void,
     cngProfPic(newProfPic: string): void,
+    cngGuesses(newGuesses: Guess[]): void,
     cngOnline(onlineState: boolean): void,
     switchMenuState(menuState: boolean): void,
     cngServerError(newError: JSX.Element | null): void,
-    confirmAccCreation(message: JSX.Element | null): void
+    confAccCreation(message: JSX.Element | null): void,
 }
 
 const useAppStore = create<State&Action>((set) => ({
-    id: -1,
+    id: null,
     cngId: (newId) => set(() => ({
         id: newId
     })),
@@ -31,11 +34,16 @@ const useAppStore = create<State&Action>((set) => ({
         username: newUsername
     })),
 
-    profilePic: "",
-    cngProfPic: (newPic) => set((state) => ({
-        profilePic: newPic
+    profPic: "",
+    cngProfPic: (newPic) => set(() => ({
+        profPic: newPic
     })
     ),
+
+    guesses: [],
+    cngGuesses: (newGuesses: Guess[] | []) => set(() => ({
+        guesses: newGuesses
+    })),
 
     online: false,
     cngOnline: (onlineState) => set(() => ({
@@ -53,7 +61,7 @@ const useAppStore = create<State&Action>((set) => ({
     })),
 
     accConfirm: null,
-    confirmAccCreation: (message) => set(() => ({
+    confAccCreation: (message) => set(() => ({
         accConfirm: message
     })),
 }));

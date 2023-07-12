@@ -16,6 +16,10 @@ button:hover {
     box-shadow: 0 0 3px;
 }
 
+a:hover {
+    box-shadow: 0 0 3px;
+}
+
 .button-subtle {
     border: 0;
     background-color: transparent;

@@ -40,7 +40,9 @@
 }
 
 .loginButton:hover {
-    box-shadow: 0 0 3px gold, 0 0 5px black;
+    box-shadow:
+        0 0 3px 1px gold,
+        0 0 5px 2px black;
 }
 
 /*LOGIN-MENU*/
@@ -116,11 +118,7 @@ h4 {
 
 /*USER INFO*/
 .menuInfoBox {
-    margin: 5px auto 15px;
-}
-
-.menuUserInfo {
-    margin: 7px auto;
-    font-size: 24px;
-    font-weight: 600;
+    font-size: 25px;
+    font-weight: 700;
+    margin: 5px auto 10px;
 }
