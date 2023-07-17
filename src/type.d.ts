@@ -1,8 +1,3 @@
-type Err = {
-    email: JSX.Element | null;
-    password: JSX.Element | null;
-}
-
 type Guess = {
     guesses: string[];
     guessId: number;

@@ -51,10 +51,9 @@ export default function useAcc () {
             status === true ? won++ :
             status === false ? lost++ :
             status === null && unfinished++
-        })
+        });
         setRatio({won: won, lost: lost, unfinished: unfinished});
     }
-
     const pastGames = guesses.map(
         (game: Guess, index: number) => {
             const success = game.success;
@@ -87,7 +86,7 @@ export default function useAcc () {
                 </div>
             );
         }
-    );
+    ).reverse();
 
     return {
         pastGames,

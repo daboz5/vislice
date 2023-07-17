@@ -10,10 +10,12 @@ export default function useFetch () {
         cngId,
         cngUsername,
         cngProfPic,
+        cngWord,
         cngGuesses,
         cngOnline,
         cngServerError,
         confAccCreation,
+        cngServerConnectionError
     } = useAppStore();
 
     const { storeData, getData } = useLocalStorage();
@@ -30,7 +32,7 @@ export default function useFetch () {
             .then(response => response.json())
             .then((result) => {
                 if (result.error) {
-                    throw new Error(result.message)
+                    throw new Error(result.message);
                 } else if (path === "/auth/whoami" && result.message === "Unauthorized") {
                     cngUsername("");
                     cngProfPic("");
@@ -59,18 +61,23 @@ export default function useFetch () {
                         word: result.normalizedWord,
                         definition: newDef
                     };
-                    storeData("word", newWord);
+                    cngWord(newWord);
                     let newGame = {
                         life: 7,
                         tried: "",
                         found: result.word.split("").map(() => " ")
                     }
+                    cngServerConnectionError(false);
                     extra(newGame)
                 }
-            })
-            .catch(error => {
-                console.log(error);
             }
+        )
+        .catch(error => {
+            if (path === "/guesses/me") {
+                cngServerConnectionError(true);
+            }
+            console.log(error);
+        }
         );
     }
     
@@ -138,7 +145,9 @@ export default function useFetch () {
         let myHeaders;
         switch (path) {
             case "/guesses":
-                myHeaders = {"Authorization": `Bearer ${token}`};
+                myHeaders = {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`};
                 break;
             case "/users/change-avatar":
                 myHeaders = {"Authorization": `Bearer ${token}`};
@@ -163,7 +172,10 @@ export default function useFetch () {
         await fetch (apiURL + path, requestOptions)
             .then(response => response.json())
             .then((result) => {
-                if (result.error) {
+                console.log(result)
+                if (result.message === "Email in use") {
+                    cngServerError(<>Email je že v uporabi, izberite drugega.</>)
+                } else if (result.error) {
                     throw new Error(
                         result.message ||
                         cngServerError(

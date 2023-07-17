@@ -9,14 +9,17 @@ import './Root.css';
 
 export default function Root () {
 
-  const { getData, removeData } = useLocalStorage();
-  const { online, switchMenuState } = useAppStore();
+  const { getData } = useLocalStorage();
+  const { online, darkMode, switchMenuState, cngDarkMode } = useAppStore();
   const { getFetch } = useFetch();
   
   useEffect(() => {
     let menuState = getData("menuOpened");
     switchMenuState(menuState ? menuState : false);
-    removeData("word");
+    let darkModeData = getData("darkMode");
+    if (darkModeData) {
+      cngDarkMode(darkModeData)
+    };
   }, []);
   
   useEffect(() => {
@@ -24,8 +27,20 @@ export default function Root () {
     getFetch("/guesses/me");
   }, [online]);
 
+  const lightStyle = {
+    color: "#202020",
+    backgroundColor: "#AFE2FF"
+  }
+
+  const darkStyle = {
+    color: "#FFFFA9",
+    backgroundColor: "#000424"
+  }
+
   return (
-    <>
+    <div
+      id="app"
+      style={darkMode ? darkStyle : lightStyle }>
       <div>
         <Toaster
           position="bottom-center"
@@ -34,9 +49,9 @@ export default function Root () {
 
       <Menu/>
       
-      <main id="app">
+      <main id="main">
           <Outlet/>
       </main>
-    </>
+    </div>
   );
 }

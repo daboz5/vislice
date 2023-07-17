@@ -7,7 +7,8 @@ import useAppStore from '../Store';
 export default function Login () {
 
   const {
-    error,
+    mailErr,
+    passErr,
     showPass,
     register,
     eventListener,
@@ -30,6 +31,7 @@ export default function Login () {
       <h4>Vpis</h4>
       <p className='inputText'>Uporabniški email:</p>
         <input
+          inputMode='email'
           className='inputField inputEmail'
           {...register("logEmail", {
             required: true,
@@ -39,12 +41,13 @@ export default function Login () {
         
       <p className='inputText'>Geslo:</p>
         <input
+          inputMode='none'
           type={showPass ?
             "text" :
             "password"
           }
           className='inputField inputPassword'
-          {...register("logPassword", {
+          {...register("logPassword1", {
             required: true,
             minLength: 1
           })}
@@ -60,12 +63,12 @@ export default function Login () {
           onClick={() => setShowPass(!showPass)}
         />
 
-        {error.email &&
+        {mailErr &&
           <p className="error">
-            {error.email}</p>}
-        {error.password &&
+            {mailErr}</p>}
+        {passErr &&
           <p className="error">
-            {error.password}</p>}
+            {passErr}</p>}
         {serverError &&
           <p className="error">
             {serverError}</p>}

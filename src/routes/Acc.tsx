@@ -7,9 +7,9 @@ import "./Acc.css"
 export default function AccountPage () {
     
     const {
-        id,
         username,
         profPic,
+        darkMode,
     } = useAppStore();
 
     const {
@@ -125,7 +125,9 @@ export default function AccountPage () {
                     Porazi: {ratio.lost}
                 </div>
                 <hr className="boardLine"/>
-                <div id="pastGamesBox">
+                <div
+                    id="pastGamesBox"
+                    className={!darkMode ? "scrollDay" : "scrollNight"}>
                     {pastGames}
                 </div>
             </div>

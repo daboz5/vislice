@@ -1,6 +1,5 @@
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { Err } from '../type';
 import useAppStore from '../Store';
 import useLocalStorage from '../utils/useLocalStorage';
 import useFetch from './useFetch';
@@ -8,8 +7,11 @@ import useFetch from './useFetch';
 export default function useMenu() {
 
     const {
+        darkMode,
+        profPic,
         online,
         menuOpened,
+        cngDarkMode,
         switchMenuState,
         cngUsername,
         cngProfPic,
@@ -21,10 +23,8 @@ export default function useMenu() {
     const { register, handleSubmit } = useForm();
     const { postFetch } = useFetch();
 
-    const [ error, setError ] = useState<Err>({
-        email: null,
-        password: null
-    });
+    const [ passErr, setPassErr ] = useState<JSX.Element | null>(null);
+    const [ mailErr, setMailErr ] = useState<JSX.Element | null>(null);
     const [ showPass, setShowPass ] = useState(false);
     const [ menuType, setMenuType ] = useState({
         regOpened: false,
@@ -45,6 +45,7 @@ export default function useMenu() {
     }
     
     const cngMenuType = () => {
+        handleReset();
         menuType.regOpened ?
         setMenuType({
             regOpened: false,
@@ -59,6 +60,8 @@ export default function useMenu() {
     const handleReset = () => {
         cngUsername("");
         cngProfPic("");
+        setMailErr(null);
+        setPassErr(null);
         cngServerError(null);
         cngOnline(false)
     }
@@ -71,19 +74,17 @@ export default function useMenu() {
   
     const onSubmit = (data) => {
         handleReset();
-    
         const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
         const emailCheck = emailRegex.test(data.logEmail);
         const passRegex = /^(?=.*\d)(?=.*[a-z]|[A-Z])(?=.*[a-zA-Z]).{6,}$/g;
-        const passCheck = passRegex.test(data.logPassword);
-    
-        if (!emailCheck || !passCheck) {
-            if (!emailCheck) {
-                error.email = <>Neustrezen epoštni naslov.</>
-                return setError(error)
-            }
-            if (!passCheck) {
-            error.password =
+        const passCheck = passRegex.test(data.logPassword1);
+        if (!emailCheck) {
+            const emailErr = <>Neustrezen epoštni naslov.</>
+            setMailErr(emailErr);
+            return
+        }
+        if (!passCheck) {
+            const passwordErr =
                 <>
                     Neustrezno geslo.<br/>
                     Ustrezno geslo vsebuje:<br/>
@@ -91,25 +92,83 @@ export default function useMenu() {
                     &ensp;- vsaj eno črko<br/>
                     &ensp;- vsaj eno številko
                 </>
-            return setError(error)
-            }
+            setPassErr(passwordErr);
+            return
+        } else if (data.logPassword2 && data.logPassword1 !== data.logPassword2 ) {
+            const passwordErr = <>Gesli se ne ujemata.</>;
+            setPassErr(passwordErr);
+            return
         }
   
         const input = {
             "email": data.logEmail,
-            "password": data.logPassword
+            "password": data.logPassword1
         }
-        postFetch("/auth/signin", input);
+        if (!data.logPassword2) {
+            postFetch("/auth/signin", input);
+        } else {
+            postFetch("/auth/signup", input);
+        }
     };
   
     const handleLogout = () => {
-      removeData("token");
-      cngOnline(false);
+        handleReset();
+        removeData("token");
+        cngOnline(false);
     }
 
+    const btn = (
+        <div
+            className="mainBtn"
+            onClick={() => handleBtnClick()}>
+            <img
+            id="mainBtnImg"
+            src={
+                profPic ?
+                profPic :
+                "user-astronaut-solid.svg"
+            }
+            style=
+            {
+                profPic ?
+                {maxHeight: "100%", maxWidth: "100%"} :
+                {maxHeight: "75%", maxWidth: "75%"}
+            }
+            alt="Slika profila"
+            />
+        </div>
+    )
+
+    const handleDarkBtnClick = () => {
+        storeData("darkMode", !darkMode);
+        cngDarkMode(!darkMode);
+    }
+
+    const darkBtn = (
+        <div
+            id="darkBtn"
+            className="mainBtn"
+            onClick={() => handleDarkBtnClick()}>
+            <img
+                id="darkBtnImg"
+                src="Moon.svg"
+                alt="dark mode btn"
+            />
+            <img
+                id="lightBtnImg"
+                src="Sun.svg"
+                style={{opacity: darkMode ? "0" : "1"}}
+                alt="light mode btn"
+            />
+        </div>
+    )
+
     return {
+        btn,
+        darkBtn,
         loc,
-        error,
+        mailErr,
+        passErr,
         menuType,
         showPass,
         setLoc,

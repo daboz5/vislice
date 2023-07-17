@@ -6,6 +6,7 @@
     top: 0;
     height: 100vh;
     width: 100vw;
+    color: black;
     text-align: center;
 }
 
@@ -23,26 +24,54 @@
 
 /*LOGIN-MENU MAIN BUTTON*/
 
-.loginButton {
+#mainBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    position: absolute;
+    top: 30px;
+    right: 35px;
+    z-index: 2;
+}
+
+.mainBtn {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
-    top: 30px;
-    right: 70px;
-    height: 75px;
-    width: 75px;
+    height: 80px;
+    width: 80px;
     overflow: hidden;
     border: 7px solid black;
     border-radius: 50px;
     background-color: gold;
-    z-index: 1;
+    transition: 0.3s;
 }
 
-.loginButton:hover {
+.mainBtn:hover {
     box-shadow:
         0 0 3px 1px gold,
         0 0 5px 2px black;
+}
+
+#darkBtn {
+    height: 60px;
+    width: 60px;
+    border: 5px solid black;
+}
+
+#darkBtnImg {
+    position: absolute;
+    max-height: 70%;
+    max-width: 70%;
+}
+
+#lightBtnImg {
+    position: absolute;
+    max-height: 80%;
+    max-width: 80%;
+    transition: 0.5s;
 }
 
 /*LOGIN-MENU*/

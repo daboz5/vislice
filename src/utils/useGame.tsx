@@ -1,28 +1,28 @@
 import { useState, useCallback } from 'react';
 import useFetch from '../utils/useFetch';
 import useLocalStorage from '../utils/useLocalStorage';
-import { Word } from '../type';
+import useAppStore from '../Store';
 
 export default function useGame() {
     
-    const [game, setGame] = useState({
+    const { word, darkMode } = useAppStore();
+    const [ game, setGame ] = useState({
         life: 7,
         tried: "",
         found: [""]
     });
     const [won, setWon] = useState(false);
     const [lost, setLost] = useState(false);
+    const [ reported, setReported] = useState(false);
 
     const { getFetch, postFetch } = useFetch();
     const { getData } = useLocalStorage();
     const menuOpened = getData("menuOpened");
-    const word: Word = getData("word");
     
     const eventListener = useCallback((event:any) => {
-        if (menuOpened || lost || won || game.found.length === 1) {
+        if (menuOpened || lost || won || !word) {
             return;
         }
-
         const life = game.life;
         const tried = game.tried;
         const found = game.found;
@@ -51,26 +51,17 @@ export default function useGame() {
         let checkForRepeats = tried.split("").indexOf(lowerKey);
 
         if (checkForRepeats === -1 && testsResult) {
-
             if (wordHasLetter < 0 && life > 0) {
-                if (tried.length === 0) {
-                    let newGame = {
-                        life: life-1,
-                        tried: lowerKey,
-                        found: found
-                    };
-                    setGame(newGame);
-                } else {
-                    let newGame = {
-                        life: life-1,
-                        tried: tried + " " + lowerKey,
-                        found: found
-                    };
-                    setGame(newGame);
-                }
+                let updatedGame = {
+                    life: life-1,
+                    tried: tried + lowerKey,
+                    found: found
+                };
+                setGame(updatedGame);
 
-                if (life === 0) {
+                if (life === 1) {
                     setLost(true);
+                    handleWordEnd(false);
                 }
             }
 
@@ -81,52 +72,58 @@ export default function useGame() {
                         newFound[i] = lowerKey;
                     }
                 }
-                if (tried.length === 0) {
-                    let newGame = {
-                        life: life,
-                        tried: lowerKey,
-                        found: newFound
-                    }
-                    setGame(newGame);
-                } else {
-                    let newGame = {
-                        life: life,
-                        tried: tried + " " + lowerKey,
-                        found: newFound
-                    }
-                    setGame(newGame);
-                    let checkForWin = found.join("").indexOf(" ");
-                    if (checkForWin === -1) {
-                        setWon(true);
-                        handleWin();
-                    }
+                let updatedGame = {
+                    life: life,
+                    tried: tried + lowerKey,
+                    found: newFound
+                }
+                setGame(updatedGame);
+
+                let checkForWin = found.join("").indexOf(" ");
+                if (checkForWin === -1) {
+                    setWon(true);
+                    handleWordEnd(true);
                 }
             }
         }
-    }, [word.word, game.tried, menuOpened])
+    }, [word, game, menuOpened])
 
     const handleClick = async () => {
+        if (!reported) {
+            handleWordEnd(false);
+        } else {
+            setReported(false);
+        }
         await getFetch("/words/random", setGame);
         setWon(false);
         setLost(false);
     }
 
-    const handleWin = () => {
-        const input = {
-            "wordId": word.id,
-            "guesses": game.tried.split(" ")
+    const handleWordEnd = (win:boolean) => {
+        if (word) {
+            const input = {
+                "wordId": word.id,
+                "guesses": win ?
+                    word.word.split("") :
+                    game.tried.split("")
+            };
+            postFetch("/guesses", input);
+            setReported(true);
+            getFetch("/guesses/me");
         }
-        postFetch("/guesses", input);
     }
 
-    let checkForWin = game.found.join("").indexOf(" ");
-
-    let letters = game.found.length > 1 &&
+    const found = game.found.length > 1 &&
         game.found.map(
             (el, index) => {
                 return (
                     <div
                         className="letters"
+                        style={
+                            darkMode ?
+                            {borderBottom: "3px solid #FFFFA9"} :
+                            {borderBottom: "3px solid black"}
+                        }
                         key={"letter"+index}>
                         {el}
                     </div>
@@ -134,13 +131,15 @@ export default function useGame() {
             }
         );
 
+    const used = game.tried.split("").join(" ");
+
     return {
         won,
         lost,
         game,
+        found,
+        used,
         menuOpened,
-        checkForWin,
-        letters,
         handleClick,
         eventListener,
         setWon,

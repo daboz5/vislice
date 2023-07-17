@@ -90,13 +90,14 @@ input {
 }
 
 #pastGamesBox {
+    height: 40vh;
     width: 30vw;
     min-width: 275px;
     max-width: 600px;
+    overflow-x: auto;
     margin-top: 5px;
-    border: 3px solid black;
-    border-radius: 3px;
-    padding: 10px 20px;
+    border-radius: 5px;
+    padding: 10px 10px 10px 20px;
 }
 
 .pastGame {
@@ -122,4 +123,24 @@ input {
 
 .boardIcon {
     max-width: 25px;
+}
+
+/*SCROLLBAR*/
+
+#pastGamesBox::-webkit-scrollbar {
+    width: 10px;
+}
+
+#pastGamesBox::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+}
+  
+.scrollDay::-webkit-scrollbar-thumb {
+    box-shadow: inset 2px 3px 6px 2px rgb(77, 219, 255);
+    background-color: rgb(0, 84, 186);
+}
+  
+.scrollNight::-webkit-scrollbar-thumb {
+    box-shadow: inset 2px 3px 5px 2px rgb(255, 235, 120);
+    background-color: rgb(160, 99, 0);
 }

@@ -1,45 +1,47 @@
 import { useEffect } from 'react';
-import { Word } from '../type';
+import useAppStore from '../Store';
 import useGame from '../utils/useGame';
-import useLocalStorage from '../utils/useLocalStorage';
 import './Game.css';
 
 export default function Game () {
 
   const {
+    word,
+    darkMode,
+    serverConnectionError,
+  } = useAppStore();
+
+  const {
     won,
     lost,
     game,
-    checkForWin,
-    letters,
+    found,
+    used,
     handleClick,
     eventListener
   } = useGame();
-
-  const { getData } = useLocalStorage();
 
   useEffect(() => {
     document.addEventListener("keydown", eventListener);
     return () => document.removeEventListener("keydown", eventListener);
   }, [eventListener]);
 
-  const word: Word = getData("word");
-
   return (
     <section className="Game">
 
       <h1>Vislice</h1>
-      <p>Življenje: <b>{game.life}</b></p>
-      <p>
-        Iskana beseda je: {won && word.word}{lost && word.word}
+      <p id="life">Življenje: <b>{game.life}</b></p>
+      <p
+        id="iskanaBeseda">
+        Iskana beseda je: <b>{won !== lost && word?.word}</b>
       </p>
-      {lost && <p>{word.definition}</p>}
-      {won && <p>{word.definition}</p>}
-      <div className="lettersBox">
+      <div className="lettersBox" inputMode='none'>
         {
-          word ?
-          letters :
-          "Povezave s serverjem ni bilo mogoče vzpostaviti."
+          serverConnectionError ?
+            "Povezave s serverjem ni bilo mogoče vzpostaviti." :
+            won !== lost ?
+              <p id="wordDefinition">{word?.definition}</p> :
+              found
         }
       </div>
 
@@ -49,13 +51,13 @@ export default function Game () {
         Nova beseda
       </button>
 
-      <p>Že uporabljeno: <b>{game.tried}</b></p>
+      <p id="uporabljeno">Že uporabljeno: <b>{used}</b></p>
 
       <div>
         {
           won === false ?
           <img
-            src={`Vislice_${game.life}.png`}
+            src={`Vislice_${game.life}${darkMode ? "-dark" : ""}.png`}
             className="image"
             alt={`Preostaja ${game.life} življenja`}
           /> :
@@ -67,15 +69,15 @@ export default function Game () {
         }
         {
           game.life > 0 &&
-          checkForWin !== -1 &&
+          !won && !lost &&
           <h3>Reši zvezdico</h3>
         }
         {
-          game.life < 1 &&
+          lost &&
           <h3>... Zvezdica je umrla ...</h3>
         }
         {
-          checkForWin === -1 &&
+          won &&
           <h3>! Zvezdica živi !</h3>
         }
       </div>
