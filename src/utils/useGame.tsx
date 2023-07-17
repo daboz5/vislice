@@ -133,6 +133,18 @@ export default function useGame() {
 
     const used = game.tried.split("").join(" ");
 
+    const napis = {
+        action: darkMode ?
+            <h3>Reši sončece</h3> :
+            <h3>Reši zvezdico</h3>,
+        won: darkMode ?
+            <h3>! Sonček živi !</h3> :
+            <h3>! Zvezdica živi !</h3>,
+        lost: darkMode ?
+            <h3>... Sonček je umrl ...</h3> :
+            <h3>... Zvezdica je umrla ...</h3>
+    }
+
     return {
         won,
         lost,
@@ -140,6 +152,7 @@ export default function useGame() {
         found,
         used,
         menuOpened,
+        napis,
         handleClick,
         eventListener,
         setWon,

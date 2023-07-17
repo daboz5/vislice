@@ -17,6 +17,7 @@ export default function Game () {
     game,
     found,
     used,
+    napis,
     handleClick,
     eventListener
   } = useGame();
@@ -70,15 +71,15 @@ export default function Game () {
         {
           game.life > 0 &&
           !won && !lost &&
-          <h3>Reši zvezdico</h3>
+          napis.action
         }
         {
           lost &&
-          <h3>... Zvezdica je umrla ...</h3>
+          napis.lost
         }
         {
           won &&
-          <h3>! Zvezdica živi !</h3>
+          napis.won
         }
       </div>
 
