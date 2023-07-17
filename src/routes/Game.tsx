@@ -8,10 +8,10 @@ export default function Game () {
   const {
     word,
     darkMode,
-    serverConnectionError,
   } = useAppStore();
 
   const {
+    gameOn,
     won,
     lost,
     game,
@@ -19,7 +19,8 @@ export default function Game () {
     used,
     napis,
     handleClick,
-    eventListener
+    eventListener,
+    probability
   } = useGame();
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export default function Game () {
       </p>
       <div className="lettersBox" inputMode='none'>
         {
-          serverConnectionError ?
+          word === null && gameOn ?
             "Povezave s serverjem ni bilo mogoče vzpostaviti." :
             won !== lost ?
               <p id="wordDefinition">{word?.definition}</p> :
@@ -52,7 +53,11 @@ export default function Game () {
         Nova beseda
       </button>
 
-      <p id="uporabljeno">Že uporabljeno: <b>{used}</b></p>
+      {
+        won || lost ?
+        <p id="uporabljeno">Povprečna verjetnost zmage je bila {probability()}</p> :
+        <p id="uporabljeno">Že uporabljeno: <b>{used}</b></p>
+      }
 
       <div>
         {
@@ -63,7 +68,7 @@ export default function Game () {
             alt={`Preostaja ${game.life} življenja`}
           /> :
           <img
-            src="Vislice_7.png"
+            src={`Vislice_7${darkMode && "-dark"}.png`}
             className="image"
             alt={`${game.life} življenja`}
           />

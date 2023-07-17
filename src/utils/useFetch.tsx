@@ -1,7 +1,7 @@
+import { Guess, Word } from "../type";
 import useAppStore from "../Store";
 import apiURL from "./api_url";
 import useLocalStorage from "./useLocalStorage";
-import { Guess, Word } from "../type";
 
 export default function useFetch () {
 
@@ -55,7 +55,9 @@ export default function useFetch () {
                 } else if (path === "/words/random") {
                     let listDef = result.definition;
                     let newDefStart = listDef[0].toUpperCase();
-                    let newDef = listDef.replace(listDef[0], newDefStart);
+                    let newDef = listDef
+                        .replace(listDef[0], newDefStart)
+                        .replace(listDef[listDef.length-1], ".");
                     let newWord: Word = {
                         id: result.id,
                         word: result.normalizedWord,

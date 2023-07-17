@@ -3,9 +3,84 @@ import useFetch from '../utils/useFetch';
 import useLocalStorage from '../utils/useLocalStorage';
 import useAppStore from '../Store';
 
+const probArr = [
+    {
+        difNum: 1,
+        avgWin: 28.29
+    },
+    {
+        difNum: 2,
+        avgWin: 9.41
+    },
+    {
+        difNum: 3,
+        avgWin: 3.91
+    },
+    {
+        difNum: 4,
+        avgWin: 1.65
+    },
+    {
+        difNum: 5,
+        avgWin: 0.9
+    },
+    {
+        difNum: 6,
+        avgWin: 0.6
+    },
+    {
+        difNum: 7,
+        avgWin: 0.37
+    },
+    {
+        difNum: 8,
+        avgWin: 0.28
+    },
+    {
+        difNum: 9,
+        avgWin: 0.23
+    },
+    {
+        difNum: 10,
+        avgWin: 0.32
+    },
+    {
+        difNum: 11,
+        avgWin: 0.29
+    },
+    {
+        difNum: 12,
+        avgWin: 0.43
+    },
+    {
+        difNum: 13,
+        avgWin: 0.51
+    },
+    {
+        difNum: 14,
+        avgWin: 0.8
+    },
+    {
+        difNum: 15,
+        avgWin: 1.87
+    },
+    {
+        difNum: 16,
+        avgWin: 3.78
+    },
+    {
+        difNum: 17,
+        avgWin: 9.6
+    },
+    {
+        difNum: 18,
+        avgWin: 28.74
+    }
+];
+
 export default function useGame() {
     
-    const { word, darkMode } = useAppStore();
+    const { word, online, darkMode } = useAppStore();
     const [ game, setGame ] = useState({
         life: 7,
         tried: "",
@@ -14,6 +89,8 @@ export default function useGame() {
     const [won, setWon] = useState(false);
     const [lost, setLost] = useState(false);
     const [ reported, setReported] = useState(false);
+    const [ gameOn, setGameOn ] = useState(false);
+    const [ prob, setProb ] = useState("");
 
     const { getFetch, postFetch } = useFetch();
     const { getData } = useLocalStorage();
@@ -97,10 +174,11 @@ export default function useGame() {
         await getFetch("/words/random", setGame);
         setWon(false);
         setLost(false);
+        !gameOn && setGameOn(true);
     }
 
     const handleWordEnd = (win:boolean) => {
-        if (word) {
+        if (word && online) {
             const input = {
                 "wordId": word.id,
                 "guesses": win ?
@@ -135,7 +213,7 @@ export default function useGame() {
 
     const napis = {
         action: darkMode ?
-            <h3>Reši sončece</h3> :
+            <h3>Reši sonček</h3> :
             <h3>Reši zvezdico</h3>,
         won: darkMode ?
             <h3>! Sonček živi !</h3> :
@@ -145,7 +223,28 @@ export default function useGame() {
             <h3>... Zvezdica je umrla ...</h3>
     }
 
+    const probability = () => {
+        if (word) {
+            let wordLetters: string[] = [];
+            const wordArr = word.word.split("");
+            wordArr.forEach((el) => {
+                if (!wordLetters.includes(el)) {
+                    wordLetters.push(el)
+                }
+            })
+            if (wordLetters.length < 19) {
+                const prob = probArr.filter(
+                    (el) => el.difNum === wordLetters.length
+                )[0];
+                return `${prob.avgWin}%`;
+            } else {
+                return "100%";
+            }
+        }
+    }
+
     return {
+        gameOn,
         won,
         lost,
         game,
@@ -157,6 +256,7 @@ export default function useGame() {
         eventListener,
         setWon,
         setLost,
-        setGame
+        setGame,
+        probability
     };
 }
