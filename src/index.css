@@ -9,112 +9,59 @@ body {
     sans-serif;
 }
 
-RouterProvider {
-  position: absolute;
-}
-
 a img, :link img, :visited img {
   border: 0;
 }
 
-@media only screen and (max-height: 800px) {
-  h1 {
-    font-size: 30px;
-  }
-  #life {
-    margin: 5px 0 0;
-  }
-  p {
-    font-size: 20px;
-  }
-  h3 {
-    display: none;
-  }
-}
-
-@media only screen and (max-height: 650px) {
-  h1 {
-    margin: 10px 0 10px;
-  }
-  #life {
-    margin: 0 0 5px;
-  }
-  #wordDefinition {
-    display: none;
-  }
-  #newWordBtn {
-    margin: 5px 0 0;
-  }
-  #iskanaBeseda {
-    margin: 0;
-  }
-  #uporabljeno {
-    font-size: 18px;
-    margin: 10px 0;
-  }
-  #mainBox {
-    flex-direction: row-reverse;
-    top: 5px;
-    right: 5px;
-  }
-}
-
-@media only screen and (max-height: 500px) {
-  #iskanaBeseda {
-    display: none;
-  }
-  .image {
-    max-height: 35vh;
-  }
-  .loginMenu-box {
-    padding: 0 10px;
-  }
-  h4 {
-    font-size: 22px;
-    padding: 5px 0 0;
-  }
-  .inputText {
-    margin: 5px 0 0;
-  }
-  .inputField {
-    max-width: 250px;
-    margin: 0 auto;
-  }
-  .button {
-    margin: 0 auto;
-  }
-}
-
-@media only screen and (max-height: 350px) {
-  #iskanaBeseda {
-    display: none;
-  }
-  .image {
-    display: none;
-  }
-}
-
-
-@media only screen and (max-width: 550px) {
+@media only screen and (max-width: 650px) {
   #mainBox {
     right: 3%;
   }
-  .boardLine {
-    display: none;
+  .accPage {
+    flex-direction: column;
+    justify-content: start;
+    gap: 20px;
   }
-  #pastGamesBox {
-    display: none;
+  .letters {
+    height: 25px;
+    font-size: 16px;
+    margin: 3px;
+  }
+  .image {
+    max-width: 90vw;
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  .informacije {
+    font-size: 20px;
+  }
+  .letters {
+    width: 17px;
+    margin: 2px;
+  }
+  #uporabljeno {
+    font-size: 20px;
   }
 }
 
 @media only screen and (max-width: 450px) {
-  #mainBox {
-    right: 3%;
+  .informacije {
+    font-size: 18px;
   }
-  .lettersBox {
+  .menuInfoBox {
+    font-size: 20px;
+  }
+  .letters {
+    height: 24px;
+    width: 14px;
     font-size: 15px;
+    margin: 1px;
   }
-  .image {
-    max-width: 90vw;
+  #uporabljeno {
+    font-size: 18px;
+  }
+  .loginMenuBox {
+    padding: 20px 50px;
   }
 }

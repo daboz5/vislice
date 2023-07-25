@@ -10,7 +10,7 @@ export default function useLocalStorage () {
 
     const getData = (key:string):any => {
         try {
-            return JSON.parse(localStorage.getItem(key) || "{}");
+            return JSON.parse(localStorage.getItem(key) || "null");
         } catch (error) {
             console.log(error)
         }

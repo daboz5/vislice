@@ -5,7 +5,7 @@ import useMenu from "../utils/useMenu"
 export default function LogedIn() {
 
     const { username } = useAppStore();
-    const { handleLogout, setLoc, loc } = useMenu();
+    const { handleLogout, handleLocChange, loc } = useMenu();
 
     return (
         <div
@@ -17,14 +17,7 @@ export default function LogedIn() {
             <Link
                 className="button"
                 to={loc.to}
-                onClick={() => setLoc({
-                    to: window.location.pathname === "/" ?
-                        "/" :
-                        "account",
-                    name: window.location.pathname === "/" ?
-                    "Vislice" :
-                    "Uporabniški račun"
-                })}
+                onClick={() => handleLocChange()}
                 rel="noopener noreferrer">
                 {loc.name}
             </Link>

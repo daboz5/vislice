@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import useAppStore from '../Store';
 import useGame from '../utils/useGame';
+import Help from '../game/Help';
 import './Game.css';
 
 export default function Game () {
@@ -8,16 +9,18 @@ export default function Game () {
   const {
     word,
     darkMode,
+    panic,
+    game,
+    won,
+    lost
   } = useAppStore();
 
   const {
     gameOn,
-    won,
-    lost,
-    game,
     found,
     used,
     napis,
+    handlePanicBtn,
     handleClick,
     eventListener,
     probability
@@ -31,8 +34,20 @@ export default function Game () {
   return (
     <section className="Game">
 
+      <Help />
+
       <h1>Vislice</h1>
-      <p id="life">Življenje: <b>{game.life}</b></p>
+      <div id="lifeBox">
+        <div
+          id="panicBtnBox"
+          onClick={() => handlePanicBtn()}>
+          <div
+            id="panicBtn"
+            style={panic.style}>
+            </div>
+        </div>
+        <p id="life">Življenje: <b>{game.life}</b></p>
+      </div>
       <p
         id="iskanaBeseda">
         Iskana beseda je: <b>{won !== lost && word?.word}</b>
@@ -42,7 +57,7 @@ export default function Game () {
           word === null && gameOn ?
             "Povezave s serverjem ni bilo mogoče vzpostaviti." :
             won !== lost ?
-              <p id="wordDefinition">{word?.definition}</p> :
+              <div id="defBox"><p id="wordDefinition">{word?.definition}</p></div> :
               found
         }
       </div>
@@ -55,36 +70,19 @@ export default function Game () {
 
       {
         won || lost ?
-        <p id="uporabljeno">Povprečna verjetnost zmage je bila {probability()}</p> :
+        <p id="uporabljeno">Verjetnost zmage je bila {probability()}</p> :
         <p id="uporabljeno">Že uporabljeno: <b>{used}</b></p>
       }
-
       <div>
+        <img
+          src={`Vislice_${game.life}${darkMode ? "-dark" : ""}.png`}
+          className="image"
+          alt={`Preostaja ${game.life} življenja`}
+        />
         {
-          won === false ?
-          <img
-            src={`Vislice_${game.life}${darkMode ? "-dark" : ""}.png`}
-            className="image"
-            alt={`Preostaja ${game.life} življenja`}
-          /> :
-          <img
-            src={`Vislice_7${darkMode && "-dark"}.png`}
-            className="image"
-            alt={`${game.life} življenja`}
-          />
-        }
-        {
-          game.life > 0 &&
-          !won && !lost &&
-          napis.action
-        }
-        {
-          lost &&
-          napis.lost
-        }
-        {
-          won &&
-          napis.won
+          game.life > 0 && napis.action ? napis.action :
+              lost && napis.lost ? napis.lost :
+              won && napis.won
         }
       </div>
 

@@ -80,24 +80,32 @@ const probArr = [
 
 export default function useGame() {
     
-    const { word, online, darkMode } = useAppStore();
-    const [ game, setGame ] = useState({
-        life: 7,
-        tried: "",
-        found: [""]
-    });
-    const [won, setWon] = useState(false);
-    const [lost, setLost] = useState(false);
-    const [ reported, setReported] = useState(false);
+    const {
+        won,
+        lost,
+        help,
+        game,
+        word,
+        online,
+        darkMode,
+        panic,
+        paniced,
+        cngGame,
+        cngPanic,
+        switchPaniced,
+        switchWon,
+        switchLost
+    } = useAppStore();
+
+    const [ reported, setReported ] = useState(false);
     const [ gameOn, setGameOn ] = useState(false);
-    const [ prob, setProb ] = useState("");
 
     const { getFetch, postFetch } = useFetch();
     const { getData } = useLocalStorage();
     const menuOpened = getData("menuOpened");
     
     const eventListener = useCallback((event:any) => {
-        if (menuOpened || lost || won || !word) {
+        if (menuOpened || lost || won || !word || help) {
             return;
         }
         const life = game.life;
@@ -130,14 +138,14 @@ export default function useGame() {
         if (checkForRepeats === -1 && testsResult) {
             if (wordHasLetter < 0 && life > 0) {
                 let updatedGame = {
-                    life: life-1,
+                    life: panic.state ? life : (life-1),
                     tried: tried + lowerKey,
                     found: found
                 };
-                setGame(updatedGame);
+                cngGame(updatedGame);
 
                 if (life === 1) {
-                    setLost(true);
+                    switchLost();
                     handleWordEnd(false);
                 }
             }
@@ -154,16 +162,31 @@ export default function useGame() {
                     tried: tried + lowerKey,
                     found: newFound
                 }
-                setGame(updatedGame);
+                cngGame(updatedGame);
 
                 let checkForWin = found.join("").indexOf(" ");
                 if (checkForWin === -1) {
-                    setWon(true);
+                    switchWon();
                     handleWordEnd(true);
                 }
             }
         }
-    }, [word, game, menuOpened])
+    }, [word, game, menuOpened, help, lost, won])
+
+    const handlePanicBtn = () => {
+        cngPanic(
+            {state: !panic.state, style: {
+                boxShadow: panic.state ?
+                    `inset 1px -1px 7px 4px black` :
+                    `inset 0 0 3px 3px black,
+                    0 0 7px 3px red`,
+                backgroundColor: panic.state ?
+                    "rgb(0, 220, 0)" :
+                    "rgb(255, 0, 0)"
+            }
+        });
+        if (!paniced) {switchPaniced()};
+    }
 
     const handleClick = async () => {
         if (!reported) {
@@ -171,14 +194,15 @@ export default function useGame() {
         } else {
             setReported(false);
         }
-        await getFetch("/words/random", setGame);
-        setWon(false);
-        setLost(false);
+        await getFetch("/words/random", cngGame);
+        if (won) {switchWon()};
+        if (lost) {switchLost()};
+        if (paniced && !panic.state) {switchPaniced()};
         !gameOn && setGameOn(true);
     }
 
     const handleWordEnd = (win:boolean) => {
-        if (word && online) {
+        if (word && online && !paniced) {
             const input = {
                 "wordId": word.id,
                 "guesses": win ?
@@ -233,10 +257,10 @@ export default function useGame() {
                 }
             })
             if (wordLetters.length < 19) {
-                const prob = probArr.filter(
+                const prob = probArr.find(
                     (el) => el.difNum === wordLetters.length
-                )[0];
-                return `${prob.avgWin}%`;
+                );
+                return `${prob!.avgWin}%`;
             } else {
                 return "100%";
             }
@@ -245,18 +269,13 @@ export default function useGame() {
 
     return {
         gameOn,
-        won,
-        lost,
-        game,
         found,
         used,
         menuOpened,
         napis,
+        handlePanicBtn,
         handleClick,
         eventListener,
-        setWon,
-        setLost,
-        setGame,
         probability
     };
 }

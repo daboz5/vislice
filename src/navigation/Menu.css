@@ -1,11 +1,10 @@
 .Login {
     display: flex;
+    justify-content: center;
     align-items: center;
     position: absolute;
-    left: 0;
-    top: 0;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     color: black;
     text-align: center;
 }
@@ -19,7 +18,7 @@
     background-color: rgba(150, 150, 150, 0.5);
     -webkit-backdrop-filter: blur(3px);
     backdrop-filter: blur(3px);
-    z-index: 0;
+    z-index: 2;
 }
 
 /*LOGIN-MENU MAIN BUTTON*/
@@ -33,7 +32,7 @@
     position: absolute;
     top: 30px;
     right: 35px;
-    z-index: 2;
+    z-index: 3;
 }
 
 .mainBtn {
@@ -76,15 +75,14 @@
 
 /*LOGIN-MENU*/
 
-.loginMenu-box {
-    margin: 0 auto;
+.loginMenuBox {
     padding: 20px 70px;
     width: 400px;
-    max-width: 100%;
+    min-width: 250px;
     border: 5px solid gold;
     border-radius: 15px;
     background-color: rgb(140, 140, 140);
-    z-index: 1;
+    z-index: 2;
 }
 
 .loginMenu {
@@ -149,5 +147,6 @@ h4 {
 .menuInfoBox {
     font-size: 25px;
     font-weight: 700;
-    margin: 5px auto 10px;
+    text-align: center;
+    margin: 5px 0 10px;
 }

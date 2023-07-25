@@ -7,10 +7,12 @@ import useFetch from './useFetch';
 export default function useMenu() {
 
     const {
+        help,
         darkMode,
         profPic,
         online,
         menuOpened,
+        switchHelp,
         cngDarkMode,
         switchMenuState,
         cngUsername,
@@ -40,6 +42,7 @@ export default function useMenu() {
     });
     
     const handleBtnClick = () => {
+        if (help) {switchHelp()};
         storeData("menuOpened", !menuOpened);
         switchMenuState(!menuOpened);
     }
@@ -93,11 +96,11 @@ export default function useMenu() {
                     &ensp;- vsaj eno številko
                 </>
             setPassErr(passwordErr);
-            return
+            return;
         } else if (data.logPassword2 && data.logPassword1 !== data.logPassword2 ) {
             const passwordErr = <>Gesli se ne ujemata.</>;
             setPassErr(passwordErr);
-            return
+            return;
         }
   
         const input = {
@@ -115,6 +118,19 @@ export default function useMenu() {
         handleReset();
         removeData("token");
         cngOnline(false);
+        handleBtnClick();
+    }
+
+    const handleLocChange = () => {
+        setLoc({
+            to: window.location.pathname === "/" ?
+                "/" :
+                "account",
+            name: window.location.pathname === "/" ?
+            "Vislice" :
+            "Uporabniški račun"
+        });
+        handleBtnClick();
     }
 
     const btn = (
@@ -123,13 +139,12 @@ export default function useMenu() {
             onClick={() => handleBtnClick()}>
             <img
             id="mainBtnImg"
-            src={
+            src= {
                 profPic ?
                 profPic :
                 "user-astronaut-solid.svg"
             }
-            style=
-            {
+            style= {
                 profPic ?
                 {maxHeight: "100%", maxWidth: "100%"} :
                 {maxHeight: "75%", maxWidth: "75%"}
@@ -171,8 +186,8 @@ export default function useMenu() {
         passErr,
         menuType,
         showPass,
-        setLoc,
         setShowPass,
+        handleLocChange,
         handleBtnClick,
         cngMenuType,
         handleLogout,

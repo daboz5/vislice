@@ -21,7 +21,7 @@ export default function Menu () {
           className="screen"
           onClick={() => handleBtnClick()}>
         </div>
-        <div className="loginMenu-box">
+        <div className="loginMenuBox">
           {
             (menuType.regOpened === true) ?
               <Register/> :

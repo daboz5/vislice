@@ -1,0 +1,117 @@
+/*BUTTON*/
+
+#infoBtnBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 30px;
+    left: 3%;
+    height: 75px;
+    width: 75px;
+    box-shadow: 0 0 5px 1px black;
+    border-radius: 50%;
+    background-color: rgb(240, 248, 255);
+    transition: 0.3s;
+    z-index: 1;
+  }
+  
+#infoBtnBox:hover {
+  box-shadow:
+    0 0 5px 1px black,
+    0 0 7px 3px gold,
+    0 0 10px 5px gold;
+}
+
+#a {
+  height: 60px;
+}
+
+#lightSource {
+  position: absolute;
+  top: 28px;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  opacity: 0.7;
+  background-color: rgb(0, 0, 50);
+  transition: 0.3s;
+}
+
+/*SCREEN*/
+
+#helpScreen {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  height: calc(100% - 10px);
+  width: 100%;
+  filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+}
+
+/*HELP MENU*/
+
+#helpMenuBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  position: absolute;
+  height: calc(100% - 10px);
+  color: black;
+  width: 100%;
+  text-align: centers;
+}
+
+.helpMenu {
+  min-width: 275px;
+  width: 80%;
+  max-width: 800px;
+  border: 5px solid rgba(255, 217, 0, 1);
+  border-radius: 15px;
+  padding: 20px 50px;
+  background-color: rgba(140, 140, 140, 1);
+  z-index: 1;
+}
+
+#helpMenuBox div h3 {
+  font-size: 25px;
+  padding-bottom: 5px;
+}
+
+#infoBox {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 0 5px;
+}
+
+#infoBox::-webkit-scrollbar {
+  width: 15px;
+}
+
+#infoBox::-webkit-scrollbar-thumb {
+  box-shadow: inset 2px 3px 5px 2px rgb(169, 169, 169);
+  border-radius: 10px;
+  background-color: rgb(100, 100, 100);
+}
+
+.informacije {
+  font-size: 22px;
+  margin: 15px 0;
+}
+
+#zaslugaBox {
+  max-width: 450px;
+}
+
+.zasluga {
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+.zasluga p {
+  margin: 0;
+}

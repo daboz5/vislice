@@ -17,6 +17,9 @@ export default function useAcc () {
     const { patchFetch } = useFetch();
 
     const handleAvatarChange = (event: any) => {
+        if (!event.target.files[0]) {
+            return;
+        }
         let file: File = event.target.files[0];
         setIFile(file);
         const maxSize = 1000000;
@@ -25,7 +28,7 @@ export default function useAcc () {
             toast.error(
                 `Največja dovoljena velikost je 1 Mb.
                 Priporočeno razmerje stranic je 1:1.`
-            )
+            );
         } else {
             const imgPreview = URL.createObjectURL(file);
             setPicPreview(imgPreview);
@@ -36,7 +39,11 @@ export default function useAcc () {
         if (inputUsername.length < 3) {
             toast.error(
                 `Uporabniško ime naj ima vsaj 3 znake.`
-            )
+            );
+        } if (inputUsername.length > 20) {
+            toast.error(
+                `Uporabniško ime naj nima več kot 20 znakov.`
+            );
         } else {
             patchFetch("/users/", inputUsername);
         }

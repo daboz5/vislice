@@ -22,6 +22,7 @@ export default function useFetch () {
 
     const getFetch = async (path: string, extra?:any) => {
         const token = getData("token");
+        if (!token && path !== "/words/random") {return};
         let requestOptions: RequestInit = {
             method: 'GET',
             redirect: 'follow',
@@ -115,43 +116,17 @@ export default function useFetch () {
 
     const postFetch = async (path: string, input: any) => {
 
-        let myBody:any;
-        switch (path) {
-            case "/guesses":
-                myBody = JSON.stringify({
-                    "wordId": input.wordId,
-                    "guesses": input.guesses
-                });
-                break;
-            case "/users/change-avatar":
-                myBody = new FormData();
-                myBody.append("file", input);
-                break;
-            case "/auth/signin":
-                myBody = JSON.stringify({
-                    "email": input.email,
-                    "password": input.password
-                });
-                break;
-            case "/auth/signup":
-                myBody = JSON.stringify({
-                    "email": input.email,
-                    "password": input.password
-                });
-                break;
-            default:
-                console.log("Unknown POST path.")
-        }
-
         const token = getData("token");
         let myHeaders;
         switch (path) {
             case "/guesses":
+                if (!token) {return};
                 myHeaders = {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`};
                 break;
             case "/users/change-avatar":
+                if (!token) {return};
                 myHeaders = {"Authorization": `Bearer ${token}`};
                 break;
             case "/auth/signin":
@@ -163,6 +138,34 @@ export default function useFetch () {
             default:
                 console.log("Unknown POST path.")
         }
+
+        let myBody:any;
+        switch (path) {
+            case "/guesses":
+                myBody = JSON.stringify({
+                    "wordId": input.wordId,
+                    "guesses": input.guesses
+                });    
+                break;
+            case "/users/change-avatar":
+                myBody = new FormData();
+                myBody.append("file", input);
+                break;
+            case "/auth/signin":
+                myBody = JSON.stringify({
+                    "email": input.email,
+                    "password": input.password
+                });    
+                break;
+            case "/auth/signup":
+                myBody = JSON.stringify({
+                    "email": input.email,
+                    "password": input.password
+                });    
+                break;
+            default:
+                console.log("Unknown POST path.")
+        }        
 
         let requestOptions: RequestInit = {
             method: 'POST',

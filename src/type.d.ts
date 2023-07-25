@@ -17,4 +17,24 @@ type Word = {
     definition: string;
 }
 
-export type { Err, Guess, Ratio, Word };
+type Panic = {
+    state: boolean;
+    style: {
+        boxShadow: string;
+        backgroundColor: string;
+    }
+}
+
+type Game = {
+    life: number;
+    tried: string;
+    found: string[]
+}
+
+export type {
+    Game,
+    Guess,
+    Panic,
+    Ratio,
+    Word,
+};
