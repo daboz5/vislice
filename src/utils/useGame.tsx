@@ -171,7 +171,7 @@ export default function useGame() {
                 }
             }
         }
-    }, [word, game, menuOpened, help, lost, won])
+    }, [word, game, menuOpened, help, lost, won, panic])
 
     const handlePanicBtn = () => {
         cngPanic(
