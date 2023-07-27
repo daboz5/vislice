@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEyeSlash, faEye  } from '@fortawesome/free-solid-svg-icons'
 import { useEffect } from 'react';
 import useMenu from '../utils/useMenu';
 import useAppStore from '../Store';
@@ -52,15 +50,11 @@ export default function Login () {
             minLength: 1
           })}
         />
-        <FontAwesomeIcon
+        <img
           className='eye'
-          icon={showPass ? faEyeSlash : faEye}
-          style={{
-            color: "#000000",
-            fontSize: 18,
-            marginTop: 8
-          }}
+          src={showPass ? "eye-opened.svg" : "eye-closed.svg"}
           onClick={() => setShowPass(!showPass)}
+          alt="show-password-icon"
         />
 
         {mailErr &&
@@ -76,8 +70,8 @@ export default function Login () {
       <button
         type="submit"
         className="button loginBtn"
-        rel="noopener noreferrer"
-        >Vpiši me
+        rel="noopener noreferrer">
+        Vpiši me
       </button>
     </form>
   )

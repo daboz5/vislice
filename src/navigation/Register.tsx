@@ -1,6 +1,4 @@
 import { useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEyeSlash, faEye  } from '@fortawesome/free-solid-svg-icons'
 import { useForm } from "react-hook-form";
 import useAppStore from '../Store';
 import useMenu from '../utils/useMenu';
@@ -74,15 +72,11 @@ export default function Register () {
           minLength: 1
         })}
       />
-      <FontAwesomeIcon
+      <img
         className='eye'
-        icon={showPass ? faEyeSlash : faEye}
-        style={{
-          color: "#000000",
-          fontSize: 18,
-          marginTop: 8
-        }}
+        src={showPass ? "eye-opened.svg" : "eye-closed.svg"}
         onClick={() => setShowPass(!showPass)}
+        alt="show-password-icon"
       />
 
       {passErr &&

@@ -117,12 +117,16 @@ h4 {
 }
 
 .eye {
-    margin: 0 auto 10px;
+    max-width: 30px;
+    color: "#000000";
+    font-size: 18px;
+    margin: 8px auto 10px;
+    transition: 0.3s;
 }
 
 .eye:hover {
-    border-radius: 10px;
-    box-shadow: 0 0 3px black;
+    border-radius: 50%;
+    box-shadow: 0 0 4px black;
 }
 
 /*POPUPs*/
