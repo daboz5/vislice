@@ -1,8 +1,9 @@
-import { useForm } from 'react-hook-form';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import useAppStore from '../Store';
 import useLocalStorage from '../utils/useLocalStorage';
-import useFetch from './useFetch';
+import apiURL from './api_url';
+import useRoot from './useRoot';
 
 export default function useMenu() {
 
@@ -18,12 +19,14 @@ export default function useMenu() {
         cngUsername,
         cngProfPic,
         cngOnline,
-        cngServerError
+        cngServerError,
+        confAccCreation
     } = useAppStore();
 
+    const { getFetch } = useRoot();
+
     const { storeData, removeData } = useLocalStorage();
-    const { register, handleSubmit } = useForm();
-    const { postFetch } = useFetch();
+    const { register, handleSubmit } = useForm<FieldValues>();
 
     const [ passErr, setPassErr ] = useState<JSX.Element | null>(null);
     const [ mailErr, setMailErr ] = useState<JSX.Element | null>(null);
@@ -42,7 +45,7 @@ export default function useMenu() {
     });
     
     const handleBtnClick = () => {
-        if (help) {switchHelp()};
+        if (help) {switchHelp()}
         storeData("menuOpened", !menuOpened);
         switchMenuState(!menuOpened);
     }
@@ -69,13 +72,13 @@ export default function useMenu() {
         cngOnline(false)
     }
   
-    const eventListener = (event) => {
+    const eventListener = (event: KeyboardEvent) => {
         if (!online && event.key === "Enter") {
-            handleSubmit(onSubmit);
+            handleSubmit(onSubmit)();
         }
     }
   
-    const onSubmit = (data) => {
+    const onSubmit: SubmitHandler<FieldValues> = (data) => {
         handleReset();
         const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
         const emailCheck = emailRegex.test(data.logEmail);
@@ -84,7 +87,7 @@ export default function useMenu() {
         if (!emailCheck) {
             const emailErr = <>Neustrezen epoštni naslov.</>
             setMailErr(emailErr);
-            return
+            return;
         }
         if (!passCheck) {
             const passwordErr =
@@ -102,17 +105,68 @@ export default function useMenu() {
             setPassErr(passwordErr);
             return;
         }
-  
-        const input = {
-            "email": data.logEmail,
-            "password": data.logPassword1
-        }
         if (!data.logPassword2) {
-            postFetch("/auth/signin", input);
+            signFetch("/auth/signin", data.logEmail, data.logPassword1);
         } else {
-            postFetch("/auth/signup", input);
+            signFetch("/auth/signup", data.logEmail, data.logPassword1);
         }
     };
+
+    const signFetch = async (path: string, emailData: string, passwordData: string) => {
+        
+        const myHeaders = {"Content-Type": "application/json"}
+        const myBody = JSON.stringify({"email": emailData, "password": passwordData});
+    
+        const requestOptions: RequestInit = {
+            method: 'POST',
+            headers: myHeaders,
+            body: myBody,
+            redirect: 'follow',
+        };
+
+        await fetch (apiURL + path, requestOptions)
+            .then(response => response.json())
+            .then((result) => {
+                if (result.message === "Email in use") {
+                    cngServerError(<>Email je že v uporabi, izberite drugega.</>)
+                } else if (result.error) {
+                    throw new Error(
+                        result.message ||
+                        cngServerError(<>Nekaj je šlo narobe, poskusite kasneje.</>)
+                    )
+                } else if (path === "/auth/signin") {
+                    const newToken = result.access_token;
+                    storeData("token", newToken);
+                    getFetch("/auth/whoami");
+                    cngOnline(true);
+                } else if (path === "/auth/signup") {
+                    confAccCreation(<>
+                        Račun je bil uspešno ustvarjen.<br/>
+                        Sedaj se lahko prijaviš.
+                    </>);
+                }
+            })
+            .catch(error => {
+                let sloError = <></>;
+                switch(error.message) {
+                    case ("Invalid email or password"):
+                        sloError = <>Email ali geslo sta napačna.</>
+                        break
+                    case ("User not found"):
+                        sloError = <>Email ali geslo sta napačna.</>
+                        break
+                    case ("Email in use"):
+                        sloError = <>Email je že v uporabi.</>
+                        break
+                    default:
+                        sloError = <>
+                            Nekaj je šlo narobe.<br/>
+                            Poskusite kasneje ali nas opozorite o napaki.
+                        </>
+                }
+                cngServerError(sloError);
+            })
+    }
   
     const handleLogout = () => {
         handleReset();

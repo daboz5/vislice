@@ -1,19 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-//import reportWebVitals from './reportWebVitals';
-
-import ErrorPage from './ErrorPage'; 
-import Root from './routes/Root';
-import Game from './routes/Game';
-import AccountPage from './routes/Acc';
-import './index.css';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import Root from "./routes/Root";
+import Game from "./routes/Game";
+import Account from "./routes/Account";
+import './index.css'
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
-    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
@@ -21,17 +17,14 @@ const router = createBrowserRouter([
       },
       {
         path: "/account",
-        element: <AccountPage />,
+        element: <Account />,
       },
     ],
   },
 ]);
 
-const rootId = document.getElementById('root')!;
-ReactDOM.createRoot(rootId).render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <RouterProvider router={router} />
-  </React.StrictMode>
-);
-
-//reportWebVitals(console.log);
+  </React.StrictMode>,
+)

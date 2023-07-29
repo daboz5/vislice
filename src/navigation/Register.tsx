@@ -29,55 +29,46 @@ export default function Register () {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="loginMenu"
-      ><h4>Ustvari nov račun</h4>
+      className="loginMenu">
+      <h4>Ustvari nov račun</h4>
       <p className='inputText'>Uporabniški email:</p>
-      <input
-        inputMode='email'
-        className='inputField inputEmail'
-        {...register("logEmail", {
-          required: true,
-          minLength: 3
-        })}
-      />
+        <input
+          inputMode='email'
+          className='inputField inputEmail'
+          {...register("logEmail", {
+            required: true,
+            minLength: 3
+          })}
+        />
         {mailErr &&
           <p className="error">
             {mailErr}</p>}
       
-      <p
-        className='inputText'
-        >Dvakrat vpiši lokalno geslo:
-      </p>
-      <input
-        inputMode='none'
-        type={showPass ?
-          "text" :
-          "password"
-        }
-        className='inputField inputPassword'
-        {...register("logPassword1", {
-          required: true,
-          minLength: 1
-        })}
-      />
-      <input
-        inputMode='none'
-        type={showPass ?
-          "text" :
-          "password"
-        }
-        className='inputField inputPassword'
-        {...register("logPassword2", {
-          required: true,
-          minLength: 1
-        })}
-      />
-      <img
-        className='eye'
-        src={showPass ? "eye-opened.svg" : "eye-closed.svg"}
-        onClick={() => setShowPass(!showPass)}
-        alt="show-password-icon"
-      />
+      <p className='inputText'>Dvakrat vpiši geslo:</p>
+        <input
+          inputMode='none'
+          type={showPass ? "text" : "password"}
+          className='inputField inputPassword'
+          {...register("logPassword1", {
+            required: true,
+            minLength: 1
+          })}
+        />
+        <input
+          inputMode='none'
+          type={showPass ? "text" : "password"}
+          className='inputField inputPassword'
+          {...register("logPassword2", {
+            required: true,
+            minLength: 1
+          })}
+        />
+        <img
+          className='eye'
+          src={showPass ? "eye-opened.svg" : "eye-closed.svg"}
+          onClick={() => setShowPass(!showPass)}
+          alt="show-password-icon"
+        />
 
       {passErr &&
         <p className="error">
@@ -90,8 +81,8 @@ export default function Register () {
           {accConfirm}</p>}
 
       <button
-        className="button"
-        onClick={handleSubmit(onSubmit)}
+        type="submit"
+        className="button loginBtn"
         rel="noopener noreferrer">
         Ustvari račun
       </button>

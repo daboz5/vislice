@@ -1,6 +1,6 @@
 type Guess = {
+    id: number;
     guesses: string[];
-    guessId: number;
     success: boolean | null;
     word: string;
 }
@@ -32,6 +32,7 @@ type Game = {
 }
 
 export type {
+    FormValues,
     Game,
     Guess,
     Panic,

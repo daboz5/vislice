@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import useAppStore from "../Store";
-import useAcc from "../utils/useAcc"
-import useFetch from "../utils/useFetch";
-import "./Acc.css"
+import useAccount from "../utils/useAccount"
+import "./Account.css"
+import useRoot from "../utils/useRoot";
 
-export default function AccountPage () {
+export default function Account () {
     
     const {
         username,
@@ -22,13 +22,15 @@ export default function AccountPage () {
         setHoverLable,
         handleUsername,
         handleAvatarChange,
-        analizirajPodatke
-    } = useAcc();
+        analizirajPodatke,
+        postPicFetch
+    } = useAccount();
 
-    const { postFetch } = useFetch();
+    const { fetchMyResults } = useRoot();
 
     useEffect(() => {
         analizirajPodatke();
+        fetchMyResults();
     }, [])
 
     return (
@@ -78,14 +80,14 @@ export default function AccountPage () {
                                     type="file"
                                     id="picBtn"
                                     className="buttonHide"
-                                    onChange={handleAvatarChange}
+                                    onChange={(event) => handleAvatarChange(event.currentTarget.files![0])}
                                     accept="image/png, image/jpeg">
                                 </input>
                             </label>
                             {picPreview &&
                                 <button
                                     className="button"
-                                    onClick={() => postFetch("/users/change-avatar", iFile)}
+                                    onClick={() => postPicFetch(iFile!)}
                                     rel="noopener noreferrer"
                                     style={{marginLeft: "10px"}}>
                                     Potrdi

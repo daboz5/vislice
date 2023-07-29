@@ -40,10 +40,7 @@ export default function Login () {
       <p className='inputText'>Geslo:</p>
         <input
           inputMode='none'
-          type={showPass ?
-            "text" :
-            "password"
-          }
+          type={showPass ? "text" : "password"}
           className='inputField inputPassword'
           {...register("logPassword1", {
             required: true,

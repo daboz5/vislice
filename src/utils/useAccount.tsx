@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { toast } from "react-hot-toast";
 import { Guess, Ratio } from '../type';
-import useFetch from './useFetch';
 import useAppStore from '../Store';
+import useLocalStorage from './useLocalStorage';
+import apiURL from './api_url';
 
-export default function useAcc () {
+export default function useAccount () {
 
-    const { guesses } = useAppStore();
+    const { guesses, id, cngUsername, cngProfPic } = useAppStore();
+    const { getData } = useLocalStorage();
 
     const [ iFile, setIFile ] = useState<File>();
     const [ picPreview, setPicPreview ] = useState("");
@@ -14,40 +16,82 @@ export default function useAcc () {
     const [ hoverLabel, setHoverLable ] = useState(false);
     const [ ratio , setRatio ] = useState<Ratio>({ won: 0, lost: 0, unfinished: 0});
 
-    const { patchFetch } = useFetch();
-
-    const handleAvatarChange = (event: any) => {
-        if (!event.target.files[0]) {
-            return;
-        }
-        let file: File = event.target.files[0];
-        setIFile(file);
-        const maxSize = 1000000;
-
-        if (file.size > maxSize) {
+    const handleAvatarChange = (file: File) => {
+        if (!file) {return}
+        if (file.size > 1000000) {
             toast.error(
                 `Največja dovoljena velikost je 1 Mb.
                 Priporočeno razmerje stranic je 1:1.`
-            );
+                );
         } else {
             const imgPreview = URL.createObjectURL(file);
             setPicPreview(imgPreview);
+            setIFile(file);
         }
     }
 
-    const handleUsername = () => {
+    const handleUsername = async () => {
+        const token = getData("token");
+        if (!token) {return}
+        
         if (inputUsername.length < 3) {
-            toast.error(
-                `Uporabniško ime naj ima vsaj 3 znake.`
-            );
-        } if (inputUsername.length > 20) {
-            toast.error(
-                `Uporabniško ime naj nima več kot 20 znakov.`
-            );
+            toast.error(`Uporabniško ime naj ima vsaj 3 znake.`);
+        } else if (inputUsername.length > 20) {
+            toast.error(`Uporabniško ime naj nima več kot 20 znakov.`);
         } else {
-            patchFetch("/users/", inputUsername);
+            const myHeaders = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            };
+            const myBody = JSON.stringify({username: inputUsername})
+            const requestOptions: RequestInit = {
+                method: 'PATCH',
+                headers: myHeaders,
+                body: myBody,
+                redirect: 'follow'
+            };
+            await fetch(apiURL + "/users/" + id, requestOptions)
+                .then(response => response.json())
+                .then((result) => {
+                    if (result.error) {
+                        throw new Error(result.message)
+                    } else if (result.username) {
+                        cngUsername(result.username);
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         }
-    };
+    }
+
+    const postPicFetch = async (input: File) => {
+        const token = getData("token");
+        if (!token) {return}
+
+        const myHeaders = {"Authorization": `Bearer ${token}`};
+        const myBody = new FormData();
+        myBody.append("file", input);
+        const requestOptions: RequestInit = {
+            method: 'POST',
+            body: myBody,
+            headers: myHeaders,
+            redirect: 'follow',
+        };
+
+        await fetch (apiURL + "/users/change-avatar", requestOptions)
+            .then(response => response.json())
+            .then((result) => {
+                if (result.error) {
+                    throw new Error(result.message)
+                } else {
+                    cngProfPic(URL.createObjectURL(input));
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            });
+    }
 
     const analizirajPodatke = () => {
         let won = 0;
@@ -105,6 +149,7 @@ export default function useAcc () {
         handleUsername,
         handleAvatarChange,
         setHoverLable,
-        analizirajPodatke
+        analizirajPodatke,
+        postPicFetch
     }
 }

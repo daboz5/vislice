@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Menu from "../navigation/Menu";
-import useFetch from "../utils/useFetch";
+import useRoot from "../utils/useRoot";
 import useAppStore from "../Store";
 import useLocalStorage from "../utils/useLocalStorage";
 import './Root.css';
@@ -11,21 +11,19 @@ export default function Root () {
 
   const { getData } = useLocalStorage();
   const { online, darkMode, switchMenuState, cngDarkMode } = useAppStore();
-  const { getFetch } = useFetch();
+  const { fetchMyData, fetchMyResults } = useRoot();
   
   useEffect(() => {
-    let menuState = getData("menuOpened");
+    const menuState = getData("menuOpened");
     switchMenuState(menuState ? menuState : false);
-    let darkModeData = getData("darkMode");
-    if (darkModeData) {
-      cngDarkMode(darkModeData)
-    };
+    const darkModeData = getData("darkMode");
+    if (darkModeData) {cngDarkMode(darkModeData)}
   }, []);
   
   useEffect(() => {
-    getFetch("/auth/whoami");
-    getFetch("/guesses/me");
-  }, [online]);
+    fetchMyData();
+    fetchMyResults();
+  }, [online, fetchMyData, fetchMyResults]);
 
   const lightStyle = {
     color: "#202020",

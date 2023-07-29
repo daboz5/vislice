@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
-import useFetch from '../utils/useFetch';
 import useLocalStorage from '../utils/useLocalStorage';
 import useAppStore from '../Store';
+import apiURL from './api_url';
+import { Word } from '../type';
 
 const probArr = [
     {
@@ -94,17 +95,68 @@ export default function useGame() {
         cngPanic,
         switchPaniced,
         switchWon,
-        switchLost
+        switchLost,
+        cngServerError,
+        cngWord,
+        cngServerConnectionError
     } = useAppStore();
 
     const [ reported, setReported ] = useState(false);
     const [ gameOn, setGameOn ] = useState(false);
 
-    const { getFetch, postFetch } = useFetch();
     const { getData } = useLocalStorage();
     const menuOpened = getData("menuOpened");
+
+    const postGuesses = useCallback(
+        async (input: {wordId: number, guesses: string[]}) => {
+            const token = getData("token");
+            const myHeaders = {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            };
+            const myBody = JSON.stringify({
+                "wordId": input.wordId,
+                "guesses": input.guesses
+            }); 
+            const requestOptions: RequestInit = {
+                method: 'POST',
+                body: myBody,
+                headers: myHeaders,
+                redirect: 'follow',
+            };
+            await fetch (apiURL + "/guesses", requestOptions)
+                .then(response => response.json())
+                .then((result) => {
+                    if (result.error) {
+                        throw new Error(
+                            result.message ||
+                            cngServerError(<>Nekaj je šlo narobe, poskusite kasneje.</>)
+                        )
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                }
+            );
+        }, [cngServerError, getData]
+    )
     
-    const eventListener = useCallback((event:any) => {
+    const handleWordEnd = useCallback(
+        (win: boolean) => {
+            if (word && online && !paniced) {
+                const input = {
+                    "wordId": word.id,
+                    "guesses": win ?
+                        word.word.split("") :
+                        game.tried.split("")
+                };
+                postGuesses(input);
+                setReported(true);
+            }
+        }, [game.tried, online, paniced, word, postGuesses]
+    )
+    
+    const eventListener = useCallback((event: KeyboardEvent) => {
         if (menuOpened || lost || won || !word || help) {
             return;
         }
@@ -112,13 +164,13 @@ export default function useGame() {
         const tried = game.tried;
         const found = game.found;
 
-        let lowerKey: string = event.key.toLowerCase();
-        let regEx1 = /..|[\W]|\d/
-        let regEx2 = /[čžš]/
-        let regEx3 = /[qwđćyx]/
-        let testKey1 = regEx1.test(lowerKey);
-        let testKey2 = regEx2.test(lowerKey);
-        let testKey3 = regEx3.test(lowerKey);
+        const lowerKey: string = event.key.toLowerCase();
+        const regEx1 = /..|[\W]|\d/
+        const regEx2 = /[čžš]/
+        const regEx3 = /[qwđćyx]/
+        const testKey1 = regEx1.test(lowerKey);
+        const testKey2 = regEx2.test(lowerKey);
+        const testKey3 = regEx3.test(lowerKey);
 
         let testsResult = true;
         if (testKey1 === true) {
@@ -131,13 +183,13 @@ export default function useGame() {
             testsResult = false;
         }
 
-        let arrayWord = word.word.split("");
-        let wordHasLetter = word.word.indexOf(lowerKey);
-        let checkForRepeats = tried.split("").indexOf(lowerKey);
+        const arrayWord = word.word.split("");
+        const wordHasLetter = word.word.indexOf(lowerKey);
+        const checkForRepeats = tried.split("").indexOf(lowerKey);
 
         if (checkForRepeats === -1 && testsResult) {
             if (wordHasLetter < 0 && life > 0) {
-                let updatedGame = {
+                const updatedGame = {
                     life: panic.state ? life : (life-1),
                     tried: tried + lowerKey,
                     found: found
@@ -151,27 +203,27 @@ export default function useGame() {
             }
 
             else if (wordHasLetter >= 0) {
-                let newFound: string[] = found;
+                const newFound: string[] = found;
                 for (let i = 0; arrayWord.length > i; i++) {
                     if (arrayWord[i] !== found[i] && arrayWord[i] === lowerKey) {
                         newFound[i] = lowerKey;
                     }
                 }
-                let updatedGame = {
+                const updatedGame = {
                     life: life,
                     tried: tried + lowerKey,
                     found: newFound
                 }
                 cngGame(updatedGame);
 
-                let checkForWin = found.join("").indexOf(" ");
+                const checkForWin = found.join("").indexOf(" ");
                 if (checkForWin === -1) {
                     switchWon();
                     handleWordEnd(true);
                 }
             }
         }
-    }, [word, game, menuOpened, help, lost, won, panic])
+    }, [word, game, menuOpened, help, lost, won, panic.state, switchLost, switchWon, cngGame, handleWordEnd])
 
     const handlePanicBtn = () => {
         cngPanic(
@@ -185,7 +237,7 @@ export default function useGame() {
                     "rgb(255, 0, 0)"
             }
         });
-        if (!paniced) {switchPaniced()};
+        if (!paniced) {switchPaniced()}
     }
 
     const handleClick = async () => {
@@ -194,25 +246,11 @@ export default function useGame() {
         } else {
             setReported(false);
         }
-        await getFetch("/words/random", cngGame);
-        if (won) {switchWon()};
-        if (lost) {switchLost()};
-        if (paniced && !panic.state) {switchPaniced()};
+        await fetchNewWord();
+        if (won) {switchWon()}
+        if (lost) {switchLost()}
+        if (paniced && !panic.state) {switchPaniced()}
         !gameOn && setGameOn(true);
-    }
-
-    const handleWordEnd = (win:boolean) => {
-        if (word && online && !paniced) {
-            const input = {
-                "wordId": word.id,
-                "guesses": win ?
-                    word.word.split("") :
-                    game.tried.split("")
-            };
-            postFetch("/guesses", input);
-            setReported(true);
-            getFetch("/guesses/me");
-        }
     }
 
     const found = game.found.length > 1 &&
@@ -249,7 +287,7 @@ export default function useGame() {
 
     const probability = () => {
         if (word) {
-            let wordLetters: string[] = [];
+            const wordLetters: string[] = [];
             const wordArr = word.word.split("");
             wordArr.forEach((el) => {
                 if (!wordLetters.includes(el)) {
@@ -267,6 +305,44 @@ export default function useGame() {
         }
     }
 
+    const fetchNewWord = async () => {
+        const requestOptions: RequestInit = {
+            method: 'GET',
+            redirect: 'follow',
+        };
+
+        await fetch(apiURL + "/words/random", requestOptions)
+            .then(response => response.json())
+            .then((result) => {
+                if (result.error) {
+                    throw new Error(result.message);
+                } else {
+                    const listDef = result.definition;
+                    const newDefStart = listDef[0].toUpperCase();
+                    const newDef = listDef
+                        .replace(listDef[0], newDefStart)
+                        .replace(listDef[listDef.length-1], ".");
+                    const newWord: Word = {
+                        id: result.id,
+                        word: result.normalizedWord,
+                        definition: newDef
+                    };
+                    cngWord(newWord);
+                    const newGame = {
+                        life: 7,
+                        tried: "",
+                        found: result.word.split("").map(() => " ")
+                    }
+                    cngServerConnectionError(false);
+                    cngGame(newGame)
+                }
+            }
+        )
+        .catch(error => {
+            console.log(error);
+        });
+    }
+
     return {
         gameOn,
         found,
@@ -276,6 +352,7 @@ export default function useGame() {
         handlePanicBtn,
         handleClick,
         eventListener,
-        probability
+        probability,
+        fetchNewWord
     };
 }

@@ -1,5 +1,5 @@
 import useAppStore from "../Store"
-import BulbIcon from "../icons/BulbIcon";
+import BulbIcon from "../assets/BulbIcon";
 import "./Help.css";
 
 export default function Help () {
