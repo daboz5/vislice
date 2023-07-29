@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import useAppStore from "../Store";
 import useAccount from "../utils/useAccount"
-import "./Account.css"
 import useRoot from "../utils/useRoot";
+import "./Account.css"
 
 export default function Account () {
     

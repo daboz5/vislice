@@ -23,7 +23,7 @@ export default function useMenu() {
         confAccCreation
     } = useAppStore();
 
-    const { getFetch } = useRoot();
+    const { fetchMyData } = useRoot();
 
     const { storeData, removeData } = useLocalStorage();
     const { register, handleSubmit } = useForm<FieldValues>();
@@ -137,7 +137,7 @@ export default function useMenu() {
                 } else if (path === "/auth/signin") {
                     const newToken = result.access_token;
                     storeData("token", newToken);
-                    getFetch("/auth/whoami");
+                    fetchMyData();
                     cngOnline(true);
                 } else if (path === "/auth/signup") {
                     confAccCreation(<>
