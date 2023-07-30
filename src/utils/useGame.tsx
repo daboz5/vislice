@@ -308,9 +308,11 @@ export default function useGame() {
     const fetchNewWord = async () => {
         const requestOptions: RequestInit = {
             method: 'GET',
+            headers: {
+                "ngrok-skip-browser-warning": "true"
+            },
             redirect: 'follow',
         };
-
         await fetch(apiURL + "/words/random", requestOptions)
             .then(response => response.json())
             .then((result) => {
