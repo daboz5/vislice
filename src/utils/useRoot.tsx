@@ -1,4 +1,5 @@
 import { Guess } from "../type";
+import { useCallback } from 'react';
 import useAppStore from "../Store";
 import apiURL from "./api_url";
 import useLocalStorage from "./useLocalStorage";
@@ -16,7 +17,7 @@ export default function useRoot () {
 
     const { getData } = useLocalStorage();
 
-    const fetchMyData = async () => {
+    const fetchMyData = useCallback(async () => {
         const token = getData("token");
         if (!token) {return}
 
@@ -46,9 +47,9 @@ export default function useRoot () {
         .catch(error => {
             console.log(error);
         });
-    }
+    }, [cngId, cngOnline, cngProfPic, cngUsername, getData])
 
-    const fetchMyResults = async () => {
+    const fetchMyResults = useCallback(async () => {
         const token = getData("token");
         if (!token) {return}
 
@@ -79,7 +80,7 @@ export default function useRoot () {
             cngServerConnectionError(true);
             console.log(error);
         });
-    }
+    }, [cngGuesses, cngServerConnectionError, getData])
 
     return { fetchMyData, fetchMyResults }
 }

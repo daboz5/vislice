@@ -3,7 +3,6 @@ import { useState } from 'react';
 import useAppStore from '../Store';
 import useLocalStorage from '../utils/useLocalStorage';
 import apiURL from './api_url';
-import useRoot from './useRoot';
 
 export default function useMenu() {
 
@@ -22,8 +21,6 @@ export default function useMenu() {
         cngServerError,
         confAccCreation
     } = useAppStore();
-
-    const { fetchMyData } = useRoot();
 
     const { storeData, removeData } = useLocalStorage();
     const { register, handleSubmit } = useForm<FieldValues>();
@@ -137,7 +134,6 @@ export default function useMenu() {
                 } else if (path === "/auth/signin") {
                     const newToken = result.access_token;
                     storeData("token", newToken);
-                    fetchMyData();
                     cngOnline(true);
                 } else if (path === "/auth/signup") {
                     confAccCreation(<>

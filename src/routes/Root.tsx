@@ -12,7 +12,8 @@ export default function Root () {
   const { getData } = useLocalStorage();
   const { online, darkMode, switchMenuState, cngDarkMode } = useAppStore();
   const { fetchMyData, fetchMyResults } = useRoot();
-  
+  console.log("Hell is Upon us")
+
   useEffect(() => {
     const menuState = getData("menuOpened");
     switchMenuState(menuState ? menuState : false);
@@ -21,9 +22,12 @@ export default function Root () {
   }, []);
   
   useEffect(() => {
+    if (!online) {return}
     fetchMyData();
     fetchMyResults();
-  }, [online, fetchMyData, fetchMyResults]);
+    console.table([online, fetchMyData, fetchMyResults])
+    console.log("Forces of heaven will RESIST!")
+  }, [online]);
 
   const lightStyle = {
     color: "#202020",
