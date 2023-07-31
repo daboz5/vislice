@@ -7,7 +7,7 @@ import apiURL from './api_url';
 
 export default function useAccount () {
 
-    const { guesses, id, cngUsername, cngProfPic } = useAppStore();
+    const { guesses, user, setUser } = useAppStore();
     const { getData } = useLocalStorage();
 
     const [ iFile, setIFile ] = useState<File>();
@@ -50,13 +50,17 @@ export default function useAccount () {
                 body: myBody,
                 redirect: 'follow'
             };
-            await fetch(apiURL + "/users/" + id, requestOptions)
+            await fetch(apiURL + "/users/" + user?.id, requestOptions)
                 .then(response => response.json())
                 .then((result) => {
                     if (result.error) {
                         throw new Error(result.message)
-                    } else if (result.username) {
-                        cngUsername(result.username);
+                    } else if (result.username && user) {
+                        setUser({
+                            id: user.id,
+                            username: result.username,
+                            profPic: user.profPic
+                        });
                     }
                 })
                 .catch(error => {
@@ -84,8 +88,12 @@ export default function useAccount () {
             .then((result) => {
                 if (result.error) {
                     throw new Error(result.message)
-                } else {
-                    cngProfPic(URL.createObjectURL(input));
+                } else if (user) {
+                    setUser({
+                        id: user.id,
+                        username: user.username,
+                        profPic: URL.createObjectURL(input)
+                    });
                 }
             })
             .catch(error => {

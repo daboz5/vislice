@@ -1,13 +1,10 @@
 import { create } from 'zustand';
-import { Game, Guess, Panic, Word } from './type';
+import { Game, Guess, Panic, User, Word } from './type';
 
 type State = {
-    id: number | null,
-    username: string,
-    profPic: string,
+    user: User,
     word: Word | null,
     guesses: Guess[] | [],
-    online: boolean,
     menuOpened: boolean,
     serverError: JSX.Element | null,
     serverConnectionError: boolean,
@@ -22,54 +19,36 @@ type State = {
 }
 
 type Action = {
-    cngId(neId: number): void,
-    cngUsername(newUsername: string): void,
-    cngProfPic(newProfPic: string): void,
-    cngWord(newWord: Word): void,
-    cngGuesses(newGuesses: Guess[]): void,
-    cngOnline(onlineState: boolean): void,
+    setUser(newUser: User): void,
+    setWord(newWord: Word): void,
+    setGuesses(newGuesses: Guess[]): void,
     switchMenuState(menuState: boolean): void,
-    cngServerError(newError: JSX.Element | null): void,
-    cngServerConnectionError(newError: boolean): void,
+    setServerError(newError: JSX.Element | null): void,
+    setServerConnectionError(newError: boolean): void,
     confAccCreation(message: JSX.Element | null): void,
-    cngDarkMode(newMode: boolean): void,
-    cngPanic(newPanic: Panic): void,
+    switchDarkMode(newMode: boolean): void,
+    setPanic(newPanic: Panic): void,
     switchPaniced(): void,
     switchHelp(): void,
-    cngGame(newGame: Game): void,
+    setGame(newGame: Game): void,
     switchWon(): void,
     switchLost(): void
 }
 
 const useAppStore = create<State&Action>((set) => ({
-    id: null,
-    cngId: (newId) => set(() => ({
-        id: newId
-    })),
-
-    username: "",
-    cngUsername: (newUsername) => set(() => ({
-        username: newUsername
-    })),
-
-    profPic: "",
-    cngProfPic: (newPic) => set(() => ({
-        profPic: newPic
+    user: null,
+    setUser:(newUser) => set(() => ({
+        user: newUser
     })),
 
     word: null,
-    cngWord: (newWord) => set(() => ({
+    setWord: (newWord) => set(() => ({
         word: newWord
     })),
 
     guesses: [],
-    cngGuesses: (newGuesses: Guess[] | []) => set(() => ({
+    setGuesses: (newGuesses: Guess[] | []) => set(() => ({
         guesses: newGuesses
-    })),
-
-    online: false,
-    cngOnline: (onlineState) => set(() => ({
-        online: onlineState
     })),
 
     menuOpened: false,
@@ -78,12 +57,12 @@ const useAppStore = create<State&Action>((set) => ({
     })),
 
     serverError: null,
-    cngServerError: (newError) => set(() => ({
+    setServerError: (newError) => set(() => ({
         serverError: newError
     })),
 
     serverConnectionError: false,
-    cngServerConnectionError: (newState) => set(() => ({
+    setServerConnectionError: (newState) => set(() => ({
         serverConnectionError: newState
     })),
 
@@ -93,7 +72,7 @@ const useAppStore = create<State&Action>((set) => ({
     })),
 
     darkMode: false,
-    cngDarkMode: (newMode) => set(() => ({
+    switchDarkMode: (newMode) => set(() => ({
         darkMode: newMode
     })),
 
@@ -105,7 +84,7 @@ const useAppStore = create<State&Action>((set) => ({
         }
     },
     paniced: false,
-    cngPanic: (newPanic) => set(() => ({
+    setPanic: (newPanic) => set(() => ({
         panic: newPanic
     })),
     switchPaniced: () => set((state) => ({
@@ -122,7 +101,7 @@ const useAppStore = create<State&Action>((set) => ({
         tried: "",
         found: [""]
     },
-    cngGame: (newGame) => set(() => ({
+    setGame: (newGame) => set(() => ({
         game: newGame
     })),
 

@@ -6,11 +6,7 @@ import "./Account.css"
 
 export default function Account () {
     
-    const {
-        username,
-        profPic,
-        darkMode,
-    } = useAppStore();
+    const { user, darkMode } = useAppStore();
 
     const {
         pastGames,
@@ -50,19 +46,15 @@ export default function Account () {
                                     alt="Slika profila"
                                 /> :
                                 <img
-                                    src={profPic ?
-                                        profPic :
+                                    src={user?.profPic ?
+                                        user.profPic :
                                         "user-astronaut-solid.svg"
                                     }
-                                    style={profPic ?
-                                        {
-                                            maxWidth: "100%",
-                                            maxHeight: "100%"
-                                        } :
-                                        {
-                                            maxWidth: "75%",
-                                            maxHeight: "75%"
-                                        }
+                                    style={user?.profPic ?
+                                        {maxWidth: "100%",
+                                        maxHeight: "100%"} :
+                                        {maxWidth: "75%",
+                                        maxHeight: "75%"}
                                     }
                                     alt="Nova slika profila"
                                 />
@@ -99,7 +91,7 @@ export default function Account () {
                 <h4>Ime računa</h4>
                 <input
                     id="accNameInput"
-                    placeholder={username}
+                    placeholder={user?.username}
                     onChange={(event) => setInputUsername(event.target.value)}
                 />
                 <button
@@ -115,7 +107,7 @@ export default function Account () {
                 <div
                     className="info"
                     style={{fontSize: 30}}>
-                    {username}
+                    {user?.username}
                 </div>
                 <div className="info">
                     Zmage: {ratio.won}

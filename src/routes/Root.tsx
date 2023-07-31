@@ -10,24 +10,20 @@ import './Root.css';
 export default function Root () {
 
   const { getData } = useLocalStorage();
-  const { online, darkMode, switchMenuState, cngDarkMode } = useAppStore();
+  const { user, darkMode, switchMenuState, switchDarkMode } = useAppStore();
   const { fetchMyData, fetchMyResults } = useRoot();
-  console.log("Hell is Upon us")
 
   useEffect(() => {
     const menuState = getData("menuOpened");
     switchMenuState(menuState ? menuState : false);
     const darkModeData = getData("darkMode");
-    if (darkModeData) {cngDarkMode(darkModeData)}
+    if (darkModeData) {switchDarkMode(darkModeData)}
   }, []);
   
   useEffect(() => {
-    if (!online) {return}
     fetchMyData();
     fetchMyResults();
-    console.table([online, fetchMyData, fetchMyResults])
-    console.log("Forces of heaven will RESIST!")
-  }, [online]);
+  }, [user?.id]);
 
   const lightStyle = {
     color: "#202020",

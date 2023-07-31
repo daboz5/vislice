@@ -4,7 +4,7 @@ import useMenu from "../utils/useMenu"
 
 export default function LogedIn() {
 
-    const { username } = useAppStore();
+    const { user } = useAppStore();
     const { handleLogout, handleLocChange, loc } = useMenu();
 
     return (
@@ -12,7 +12,7 @@ export default function LogedIn() {
             className='loginMenu'>
             <div
                 className='menuInfoBox'>
-                {username}
+                {user?.username}
             </div>
             <Link
                 className="button"

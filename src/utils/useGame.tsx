@@ -82,23 +82,23 @@ const probArr = [
 export default function useGame() {
     
     const {
+        user,
         won,
         lost,
         help,
         game,
         word,
-        online,
         darkMode,
         panic,
         paniced,
-        cngGame,
-        cngPanic,
+        setWord,
+        setGame,
+        setPanic,
         switchPaniced,
         switchWon,
         switchLost,
-        cngServerError,
-        cngWord,
-        cngServerConnectionError
+        setServerError,
+        setServerConnectionError
     } = useAppStore();
 
     const [ reported, setReported ] = useState(false);
@@ -130,7 +130,7 @@ export default function useGame() {
                     if (result.error) {
                         throw new Error(
                             result.message ||
-                            cngServerError(<>Nekaj je šlo narobe, poskusite kasneje.</>)
+                            setServerError(<>Nekaj je šlo narobe, poskusite kasneje.</>)
                         )
                     }
                 })
@@ -138,12 +138,12 @@ export default function useGame() {
                     console.log(error)
                 }
             );
-        }, [cngServerError, getData]
+        }, [setServerError, getData]
     )
     
     const handleWordEnd = useCallback(
         (win: boolean) => {
-            if (word && online && !paniced) {
+            if (word && user && !paniced) {
                 const input = {
                     "wordId": word.id,
                     "guesses": win ?
@@ -153,7 +153,7 @@ export default function useGame() {
                 postGuesses(input);
                 setReported(true);
             }
-        }, [game.tried, online, paniced, word, postGuesses]
+        }, [game.tried, user, paniced, word, postGuesses]
     )
     
     const eventListener = useCallback((event: KeyboardEvent) => {
@@ -194,7 +194,7 @@ export default function useGame() {
                     tried: tried + lowerKey,
                     found: found
                 };
-                cngGame(updatedGame);
+                setGame(updatedGame);
 
                 if (life === 1) {
                     switchLost();
@@ -214,7 +214,7 @@ export default function useGame() {
                     tried: tried + lowerKey,
                     found: newFound
                 }
-                cngGame(updatedGame);
+                setGame(updatedGame);
 
                 const checkForWin = found.join("").indexOf(" ");
                 if (checkForWin === -1) {
@@ -223,10 +223,10 @@ export default function useGame() {
                 }
             }
         }
-    }, [word, game, menuOpened, help, lost, won, panic.state, switchLost, switchWon, cngGame, handleWordEnd])
+    }, [word, game, menuOpened, help, lost, won, panic.state, switchLost, switchWon, setGame, handleWordEnd])
 
     const handlePanicBtn = () => {
-        cngPanic(
+        setPanic(
             {state: !panic.state, style: {
                 boxShadow: panic.state ?
                     `inset 1px -1px 7px 4px black` :
@@ -329,14 +329,14 @@ export default function useGame() {
                         word: result.normalizedWord,
                         definition: newDef
                     };
-                    cngWord(newWord);
+                    setWord(newWord);
                     const newGame = {
                         life: 7,
                         tried: "",
                         found: result.word.split("").map(() => " ")
                     }
-                    cngServerConnectionError(false);
-                    cngGame(newGame)
+                    setServerConnectionError(false);
+                    setGame(newGame)
                 }
             }
         )

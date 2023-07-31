@@ -1,20 +1,14 @@
+type Game = {
+    life: number;
+    tried: string;
+    found: string[]
+}
+
 type Guess = {
     id: number;
     guesses: string[];
     success: boolean | null;
     word: string;
-}
-
-type Ratio = {
-    won: number;
-    lost: number;
-    unfinished: number;
-}
-
-type Word = {
-    id: number;
-    word: string;
-    definition: string;
 }
 
 type Panic = {
@@ -25,17 +19,29 @@ type Panic = {
     }
 }
 
-type Game = {
-    life: number;
-    tried: string;
-    found: string[]
+type Ratio = {
+    won: number;
+    lost: number;
+    unfinished: number;
+}
+
+type User = {
+    id: number,
+    username: string,
+    profPic: string
+} | null
+
+type Word = {
+    id: number;
+    word: string;
+    definition: string;
 }
 
 export type {
-    FormValues,
     Game,
     Guess,
     Panic,
     Ratio,
+    User,
     Word,
 };

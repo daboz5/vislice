@@ -7,18 +7,15 @@ import apiURL from './api_url';
 export default function useMenu() {
 
     const {
+        user,
         help,
         darkMode,
-        profPic,
-        online,
         menuOpened,
+        setUser,
         switchHelp,
-        cngDarkMode,
+        switchDarkMode,
         switchMenuState,
-        cngUsername,
-        cngProfPic,
-        cngOnline,
-        cngServerError,
+        setServerError,
         confAccCreation
     } = useAppStore();
 
@@ -61,16 +58,14 @@ export default function useMenu() {
     }
   
     const handleReset = () => {
-        cngUsername("");
-        cngProfPic("");
+        setUser(null);
         setMailErr(null);
         setPassErr(null);
-        cngServerError(null);
-        cngOnline(false)
+        setServerError(null);
     }
   
     const eventListener = (event: KeyboardEvent) => {
-        if (!online && event.key === "Enter") {
+        if (!user && event.key === "Enter") {
             handleSubmit(onSubmit)();
         }
     }
@@ -125,16 +120,15 @@ export default function useMenu() {
             .then(response => response.json())
             .then((result) => {
                 if (result.message === "Email in use") {
-                    cngServerError(<>Email je že v uporabi, izberite drugega.</>)
+                    setServerError(<>Email je že v uporabi, izberite drugega.</>)
                 } else if (result.error) {
                     throw new Error(
                         result.message ||
-                        cngServerError(<>Nekaj je šlo narobe, poskusite kasneje.</>)
+                        setServerError(<>Nekaj je šlo narobe, poskusite kasneje.</>)
                     )
                 } else if (path === "/auth/signin") {
                     const newToken = result.access_token;
                     storeData("token", newToken);
-                    cngOnline(true);
                 } else if (path === "/auth/signup") {
                     confAccCreation(<>
                         Račun je bil uspešno ustvarjen.<br/>
@@ -160,14 +154,13 @@ export default function useMenu() {
                             Poskusite kasneje ali nas opozorite o napaki.
                         </>
                 }
-                cngServerError(sloError);
+                setServerError(sloError);
             })
     }
   
     const handleLogout = () => {
         handleReset();
         removeData("token");
-        cngOnline(false);
         handleBtnClick();
     }
 
@@ -190,12 +183,12 @@ export default function useMenu() {
             <img
             id="mainBtnImg"
             src= {
-                profPic ?
-                profPic :
+                user?.profPic ?
+                user.profPic :
                 "user-astronaut-solid.svg"
             }
             style= {
-                profPic ?
+                user?.profPic ?
                 {maxHeight: "100%", maxWidth: "100%"} :
                 {maxHeight: "75%", maxWidth: "75%"}
             }
@@ -206,7 +199,7 @@ export default function useMenu() {
 
     const handleDarkBtnClick = () => {
         storeData("darkMode", !darkMode);
-        cngDarkMode(!darkMode);
+        switchDarkMode(!darkMode);
     }
 
     const darkBtn = (

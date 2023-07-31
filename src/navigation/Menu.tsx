@@ -7,7 +7,7 @@ import './Menu.css';
 
 export default function Menu () {
 
-  const { online, menuOpened } = useAppStore();
+  const { user, menuOpened } = useAppStore();
   const { menuType, btn, darkBtn, handleBtnClick, cngMenuType } = useMenu();
 
   return <>
@@ -25,9 +25,9 @@ export default function Menu () {
           {
             (menuType.regOpened === true) ?
               <Register/> :
-              (online === false) ?
-                <Login/> :
-                <LogedIn/>
+              (user) ?
+                <LogedIn/> :
+                <Login/>
           }
           <button
             className="button button-subtle"

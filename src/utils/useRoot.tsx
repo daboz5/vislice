@@ -7,12 +7,9 @@ import useLocalStorage from "./useLocalStorage";
 export default function useRoot () {
 
     const {
-        cngId,
-        cngUsername,
-        cngProfPic,
-        cngGuesses,
-        cngOnline,
-        cngServerConnectionError
+        setUser,
+        setGuesses,
+        setServerConnectionError
     } = useAppStore();
 
     const { getData } = useLocalStorage();
@@ -33,21 +30,20 @@ export default function useRoot () {
                 if (result.error) {
                     throw new Error(result.message);
                 } else if (result.message === "Unauthorized") {
-                    cngUsername("");
-                    cngProfPic("");
-                    cngOnline(false);
+                    setUser(null)
                 } else if (result.message !== "Unauthorized") {
-                    cngId(result.id)
-                    cngUsername(result.username);
-                    cngProfPic(result.avatar);
-                    cngOnline(true);
+                    setUser({
+                        id: result.id,
+                        username: result.username,
+                        profPic: result.avatar
+                    })
                 }
             }
         )
         .catch(error => {
             console.log(error);
         });
-    }, [cngId, cngOnline, cngProfPic, cngUsername, getData])
+    }, [setUser, getData])
 
     const fetchMyResults = useCallback(async () => {
         const token = getData("token");
@@ -72,15 +68,15 @@ export default function useRoot () {
                             success: guess.success
                         }
                     })
-                    cngGuesses(newResult);
+                    setGuesses(newResult);
                 }
             }
         )
         .catch(error => {
-            cngServerConnectionError(true);
+            setServerConnectionError(true);
             console.log(error);
         });
-    }, [cngGuesses, cngServerConnectionError, getData])
+    }, [setGuesses, setServerConnectionError, getData])
 
     return { fetchMyData, fetchMyResults }
 }
