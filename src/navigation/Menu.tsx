@@ -4,15 +4,18 @@ import Login from './Login';
 import Register from './Register';
 import LogedIn from './LogedIn';
 import './Menu.css';
+import Chains from '../assets/Chains';
 
-export default function Menu () {
+export default function Menu() {
 
   const { user, menuOpened } = useAppStore();
   const { menuType, btn, darkBtn, handleBtnClick, cngMenuType } = useMenu();
 
   return <>
     <div id="mainBox">
+      <Chains />
       {btn}
+      <Chains />
       {darkBtn}
     </div>
     {menuOpened &&
@@ -24,10 +27,10 @@ export default function Menu () {
         <div className="loginMenuBox">
           {
             (menuType.regOpened === true) ?
-              <Register/> :
+              <Register /> :
               (user) ?
-                <LogedIn/> :
-                <Login/>
+                <LogedIn /> :
+                <Login />
           }
           <button
             className="button button-subtle"

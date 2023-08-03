@@ -154,3 +154,19 @@ h4 {
     text-align: center;
     margin: 5px 0 10px;
 }
+
+/*CHAINS*/
+
+#chains {
+    position: absolute;
+    max-height: 50px;
+    z-index: -1;
+}
+
+#chains:nth-of-type(1) {
+    top: -40px;
+}
+
+#chains:nth-of-type(2) {
+    top: 51px;
+}

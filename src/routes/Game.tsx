@@ -4,7 +4,7 @@ import useGame from '../utils/useGame';
 import Help from '../game/Help';
 import './Game.css';
 
-export default function Game () {
+export default function Game() {
 
   const {
     word,
@@ -44,13 +44,13 @@ export default function Game () {
           <div
             id="panicBtn"
             style={panic.style}>
-            </div>
+          </div>
         </div>
         <p id="life">Življenje: <b>{game.life}</b></p>
       </div>
       <p
         id="iskanaBeseda">
-        Iskana beseda je: <b>{won !== lost && word?.word}</b>
+        Iskana beseda je: {word?.definition} <b>{won !== lost && word?.word}</b>
       </p>
       <div className="lettersBox" inputMode='none'>
         {
@@ -70,8 +70,8 @@ export default function Game () {
 
       {
         won || lost ?
-        <p id="uporabljeno">Verjetnost zmage je bila {probability()}</p> :
-        <p id="uporabljeno">Že uporabljeno: <b>{used}</b></p>
+          <p id="uporabljeno">Verjetnost zmage je bila {probability()}</p> :
+          <p id="uporabljeno">Že uporabljeno: <b>{used}</b></p>
       }
       <div>
         <img
@@ -81,7 +81,7 @@ export default function Game () {
         />
         {
           game.life > 0 && napis.action ? napis.action :
-              lost && napis.lost ? napis.lost :
+            lost && napis.lost ? napis.lost :
               won && napis.won
         }
       </div>

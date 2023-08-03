@@ -80,7 +80,7 @@ const probArr = [
 ];
 
 export default function useGame() {
-    
+
     const {
         user,
         won,
@@ -101,14 +101,14 @@ export default function useGame() {
         setServerConnectionError
     } = useAppStore();
 
-    const [ reported, setReported ] = useState(false);
-    const [ gameOn, setGameOn ] = useState(false);
+    const [reported, setReported] = useState(false);
+    const [gameOn, setGameOn] = useState(false);
 
     const { getData } = useLocalStorage();
     const menuOpened = getData("menuOpened");
 
     const postGuesses = useCallback(
-        async (input: {wordId: number, guesses: string[]}) => {
+        async (input: { wordId: number, guesses: string[] }) => {
             const token = getData("token");
             const myHeaders = {
                 "Content-Type": "application/json",
@@ -117,14 +117,14 @@ export default function useGame() {
             const myBody = JSON.stringify({
                 "wordId": input.wordId,
                 "guesses": input.guesses
-            }); 
+            });
             const requestOptions: RequestInit = {
                 method: 'POST',
                 body: myBody,
                 headers: myHeaders,
                 redirect: 'follow',
             };
-            await fetch (apiURL + "/guesses", requestOptions)
+            await fetch(apiURL + "/guesses", requestOptions)
                 .then(response => response.json())
                 .then((result) => {
                     if (result.error) {
@@ -137,10 +137,10 @@ export default function useGame() {
                 .catch(error => {
                     console.log(error)
                 }
-            );
+                );
         }, [setServerError, getData]
     )
-    
+
     const handleWordEnd = useCallback(
         (win: boolean) => {
             if (word && user && !paniced) {
@@ -155,7 +155,7 @@ export default function useGame() {
             }
         }, [game.tried, user, paniced, word, postGuesses]
     )
-    
+
     const eventListener = useCallback((event: KeyboardEvent) => {
         if (menuOpened || lost || won || !word || help) {
             return;
@@ -190,7 +190,7 @@ export default function useGame() {
         if (checkForRepeats === -1 && testsResult) {
             if (wordHasLetter < 0 && life > 0) {
                 const updatedGame = {
-                    life: panic.state ? life : (life-1),
+                    life: panic.state ? life : (life - 1),
                     tried: tried + lowerKey,
                     found: found
                 };
@@ -227,17 +227,18 @@ export default function useGame() {
 
     const handlePanicBtn = () => {
         setPanic(
-            {state: !panic.state, style: {
-                boxShadow: panic.state ?
-                    `inset 1px -1px 7px 4px black` :
-                    `inset 0 0 3px 3px black,
-                    0 0 7px 3px red`,
-                backgroundColor: panic.state ?
-                    "rgb(0, 220, 0)" :
-                    "rgb(255, 0, 0)"
-            }
-        });
-        if (!paniced) {switchPaniced()}
+            {
+                state: !panic.state, style: {
+                    boxShadow: panic.state ?
+                        `inset 1px -1px 7px 4px black` :
+                        `inset 0 0 3px 3px black,
+                        0 0 7px 3px red`,
+                    backgroundColor: panic.state ?
+                        "rgb(0, 220, 0)" :
+                        "rgb(255, 0, 0)"
+                }
+            });
+        if (!paniced) { switchPaniced() }
     }
 
     const handleClick = async () => {
@@ -247,9 +248,9 @@ export default function useGame() {
             setReported(false);
         }
         await fetchNewWord();
-        if (won) {switchWon()}
-        if (lost) {switchLost()}
-        if (paniced && !panic.state) {switchPaniced()}
+        if (won) { switchWon() }
+        if (lost) { switchLost() }
+        if (paniced && !panic.state) { switchPaniced() }
         !gameOn && setGameOn(true);
     }
 
@@ -261,10 +262,10 @@ export default function useGame() {
                         className="letters"
                         style={
                             darkMode ?
-                            {borderBottom: "3px solid #FFFFA9"} :
-                            {borderBottom: "3px solid black"}
+                                { borderBottom: "3px solid #FFFFA9" } :
+                                { borderBottom: "3px solid black" }
                         }
-                        key={"letter"+index}>
+                        key={"letter" + index}>
                         {el}
                     </div>
                 )
@@ -308,9 +309,7 @@ export default function useGame() {
     const fetchNewWord = async () => {
         const requestOptions: RequestInit = {
             method: 'GET',
-            headers: {
-                "ngrok-skip-browser-warning": "true"
-            },
+            headers: { "ngrok-skip-browser-warning": "true" },
             redirect: 'follow',
         };
         await fetch(apiURL + "/words/random", requestOptions)
@@ -319,17 +318,36 @@ export default function useGame() {
                 if (result.error) {
                     throw new Error(result.message);
                 } else {
-                    const listDef = result.definition;
-                    const newDefStart = listDef[0].toUpperCase();
-                    const newDef = listDef
-                        .replace(listDef[0], newDefStart)
-                        .replace(listDef[listDef.length-1], ".");
-                    const newWord: Word = {
-                        id: result.id,
-                        word: result.normalizedWord,
-                        definition: newDef
-                    };
-                    setWord(newWord);
+                    if (result.definition) {
+                        const listDef = result.definition;
+                        const newDefStart = listDef[0].toUpperCase();
+                        let newDef = listDef
+                            .replace(listDef[0], newDefStart)
+                            .replaceAll(/[1-9]/g, "")
+                        if (newDef[newDef.length - 1] === " ") {
+                            newDef = newDef.slice(0, newDef.length - 1);
+                        }
+                        if (newDef[newDef.length - 1] === "," || newDef[newDef.length - 1] === ";" || newDef[newDef.length - 1] === ":") {
+                            newDef = newDef.slice(0, newDef.length - 1);
+                        }
+                        if (newDef[newDef.length - 1] === " ") {
+                            newDef = newDef.slice(0, newDef.length - 1);
+                        }
+                        newDef = newDef + "."
+                        const newWord: Word = {
+                            id: result.id,
+                            word: result.normalizedWord,
+                            definition: newDef
+                        };
+                        setWord(newWord);
+                    } else {
+                        const newWord: Word = {
+                            id: result.id,
+                            word: result.normalizedWord,
+                            definition: "Definicija ni na voljo."
+                        };
+                        setWord(newWord);
+                    }
                     const newGame = {
                         life: 7,
                         tried: "",
@@ -339,10 +357,10 @@ export default function useGame() {
                     setGame(newGame)
                 }
             }
-        )
-        .catch(error => {
-            console.log(error);
-        });
+            )
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     return {
