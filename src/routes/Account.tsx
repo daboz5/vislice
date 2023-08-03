@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 import useAppStore from "../Store";
 import useAccount from "../utils/useAccount"
-import useRoot from "../utils/useRoot";
 import "./Account.css"
 
-export default function Account () {
-    
+export default function Account() {
+
     const { user, darkMode } = useAppStore();
 
     const {
@@ -18,14 +17,11 @@ export default function Account () {
         setHoverLable,
         handleUsername,
         handleAvatarChange,
-        analizirajPodatke,
-        postPicFetch
+        postPicFetch,
+        fetchMyResults
     } = useAccount();
 
-    const { fetchMyResults } = useRoot();
-
     useEffect(() => {
-        analizirajPodatke();
         fetchMyResults();
     }, [])
 
@@ -34,59 +30,63 @@ export default function Account () {
             <div className="settingsBox">
 
                 <h4>Profilna slika</h4>
-                    <div className="changeAvatarBox">
-                        <div className="avatarBox">
-                            {picPreview ?
-                                <img
-                                    src={picPreview}
-                                    style={{
+                <div className="changeAvatarBox">
+                    <div className="avatarBox">
+                        {picPreview ?
+                            <img
+                                src={picPreview}
+                                style={{
+                                    maxWidth: "100%",
+                                    maxHeight: "100%"
+                                }}
+                                alt="Slika profila"
+                            /> :
+                            <img
+                                src={user?.profPic ?
+                                    user.profPic :
+                                    "user-astronaut-solid.svg"
+                                }
+                                style={user?.profPic ?
+                                    {
                                         maxWidth: "100%",
                                         maxHeight: "100%"
-                                    }}
-                                    alt="Slika profila"
-                                /> :
-                                <img
-                                    src={user?.profPic ?
-                                        user.profPic :
-                                        "user-astronaut-solid.svg"
+                                    } :
+                                    {
+                                        maxWidth: "75%",
+                                        maxHeight: "75%"
                                     }
-                                    style={user?.profPic ?
-                                        {maxWidth: "100%",
-                                        maxHeight: "100%"} :
-                                        {maxWidth: "75%",
-                                        maxHeight: "75%"}
-                                    }
-                                    alt="Nova slika profila"
-                                />
-                            }
-                        </div>
-                        <div>
-                            <label
-                                className="button"
-                                onMouseEnter={() => {setHoverLable(true)}}
-                                onMouseLeave={() => {setHoverLable(false)}}
-                                style={hoverLabel ? {boxShadow: "0 0 3px"} : {}}
-                                htmlFor="picBtn">
-                                Izberi
-                                <input
-                                    type="file"
-                                    id="picBtn"
-                                    className="buttonHide"
-                                    onChange={(event) => handleAvatarChange(event.currentTarget.files![0])}
-                                    accept="image/png, image/jpeg">
-                                </input>
-                            </label>
-                            {picPreview &&
-                                <button
-                                    className="button"
-                                    onClick={() => postPicFetch(iFile!)}
-                                    rel="noopener noreferrer"
-                                    style={{marginLeft: "10px"}}>
-                                    Potrdi
-                                </button>
-                            }
-                        </div>
+                                }
+                                alt="Nova slika profila"
+                            />
+                        }
                     </div>
+                    <div>
+                        <label
+                            className="button"
+                            onMouseEnter={() => { setHoverLable(true) }}
+                            onMouseLeave={() => { setHoverLable(false) }}
+                            style={hoverLabel ? { boxShadow: "0 0 3px" } : {}}
+                            htmlFor="picBtn">
+                            Izberi
+                            <input
+                                type="file"
+                                id="picBtn"
+                                className="buttonHide"
+                                onChange={(event) => handleAvatarChange(event.currentTarget.files![0])}
+                                accept="image/png, image/jpeg">
+                            </input>
+                        </label>
+                        {picPreview &&
+                            <button
+                                className="button"
+                                onClick={() => postPicFetch(iFile!)}
+                                rel="noopener noreferrer"
+                                style={{ marginLeft: "10px" }}>
+                                Potrdi
+                            </button>
+                        }
+                    </div>
+                </div>
 
                 <h4>Ime računa</h4>
                 <input
@@ -102,11 +102,11 @@ export default function Account () {
                 </button>
 
             </div>
-            
+
             <div className="infoBox">
                 <div
                     className="info"
-                    style={{fontSize: 30}}>
+                    style={{ fontSize: 30 }}>
                     {user?.username}
                 </div>
                 <div className="info">
@@ -118,7 +118,7 @@ export default function Account () {
                 <div className="info">
                     Porazi: {ratio.lost}
                 </div>
-                <hr className="boardLine"/>
+                <hr className="boardLine" />
                 <div
                     id="pastGamesBox"
                     className={!darkMode ? "scrollDay" : "scrollNight"}>

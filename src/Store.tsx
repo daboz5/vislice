@@ -35,9 +35,9 @@ type Action = {
     switchLost(): void
 }
 
-const useAppStore = create<State&Action>((set) => ({
+const useAppStore = create<State & Action>((set) => ({
     user: null,
-    setUser:(newUser) => set(() => ({
+    setUser: (newUser) => set(() => ({
         user: newUser
     })),
 

@@ -1,28 +1,34 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { toast } from "react-hot-toast";
 import { Guess, Ratio } from '../type';
 import useAppStore from '../Store';
 import useLocalStorage from './useLocalStorage';
 import apiURL from './api_url';
 
-export default function useAccount () {
+export default function useAccount() {
 
-    const { guesses, user, setUser } = useAppStore();
+    const {
+        guesses,
+        user,
+        setUser,
+        setGuesses,
+        setServerConnectionError
+    } = useAppStore();
     const { getData } = useLocalStorage();
 
-    const [ iFile, setIFile ] = useState<File>();
-    const [ picPreview, setPicPreview ] = useState("");
-    const [ inputUsername, setInputUsername ] = useState("");
-    const [ hoverLabel, setHoverLable ] = useState(false);
-    const [ ratio , setRatio ] = useState<Ratio>({ won: 0, lost: 0, unfinished: 0});
+    const [iFile, setIFile] = useState<File>();
+    const [picPreview, setPicPreview] = useState("");
+    const [inputUsername, setInputUsername] = useState("");
+    const [hoverLabel, setHoverLable] = useState(false);
+    const [ratio, setRatio] = useState<Ratio>({ won: 0, lost: 0, unfinished: 0 });
 
     const handleAvatarChange = (file: File) => {
-        if (!file) {return}
+        if (!file) { return }
         if (file.size > 1000000) {
             toast.error(
                 `Največja dovoljena velikost je 1 Mb.
                 Priporočeno razmerje stranic je 1:1.`
-                );
+            );
         } else {
             const imgPreview = URL.createObjectURL(file);
             setPicPreview(imgPreview);
@@ -32,8 +38,8 @@ export default function useAccount () {
 
     const handleUsername = async () => {
         const token = getData("token");
-        if (!token) {return}
-        
+        if (!token) { return }
+
         if (inputUsername.length < 3) {
             toast.error(`Uporabniško ime naj ima vsaj 3 znake.`);
         } else if (inputUsername.length > 20) {
@@ -43,7 +49,7 @@ export default function useAccount () {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`
             };
-            const myBody = JSON.stringify({username: inputUsername})
+            const myBody = JSON.stringify({ username: inputUsername })
             const requestOptions: RequestInit = {
                 method: 'PATCH',
                 headers: myHeaders,
@@ -71,9 +77,9 @@ export default function useAccount () {
 
     const postPicFetch = async (input: File) => {
         const token = getData("token");
-        if (!token) {return}
+        if (!token) { return }
 
-        const myHeaders = {"Authorization": `Bearer ${token}`};
+        const myHeaders = { "Authorization": `Bearer ${token}` };
         const myBody = new FormData();
         myBody.append("file", input);
         const requestOptions: RequestInit = {
@@ -83,7 +89,7 @@ export default function useAccount () {
             redirect: 'follow',
         };
 
-        await fetch (apiURL + "/users/change-avatar", requestOptions)
+        await fetch(apiURL + "/users/change-avatar", requestOptions)
             .then(response => response.json())
             .then((result) => {
                 if (result.error) {
@@ -101,25 +107,57 @@ export default function useAccount () {
             });
     }
 
-    const analizirajPodatke = () => {
-        let won = 0;
-        let lost = 0;
-        let unfinished = 0;
-        guesses.forEach((guess:Guess) => {
-            const status = guess.success;
-            status === true ? won++ :
-            status === false ? lost++ :
-            status === null && unfinished++
-        });
-        setRatio({won: won, lost: lost, unfinished: unfinished});
-    }
+
+    const fetchMyResults = useCallback(async () => {
+        const token = getData("token");
+        if (!token) { return }
+
+        const requestOptions: RequestInit = {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${token}` },
+            redirect: 'follow'
+        };
+        await fetch(apiURL + "/guesses/me", requestOptions)
+            .then(response => response.json())
+            .then((result) => {
+                if (result.error) {
+                    throw new Error(result.message);
+                } else {
+                    const newResult = result.map((guess: Guess) => {
+                        return {
+                            guessId: guess.id,
+                            word: guess.word,
+                            guesses: guess.guesses,
+                            success: guess.success
+                        }
+                    })
+                    setGuesses(newResult);
+                    let won = 0;
+                    let lost = 0;
+                    let unfinished = 0;
+                    newResult.forEach((guess: Guess) => {
+                        const status = guess.success;
+                        status === true ? won++ :
+                            status === false ? lost++ :
+                                status === null && unfinished++
+                    });
+                    setRatio({ won: won, lost: lost, unfinished: unfinished });
+                }
+            }
+            )
+            .catch(error => {
+                setServerConnectionError(true);
+                console.log(error);
+            });
+    }, [setGuesses, setServerConnectionError, getData])
+
     const pastGames = guesses.map(
         (game: Guess, index: number) => {
             const success = game.success;
             return (
                 <div
                     className='pastGame'
-                    key={"game"+(index+1)}>
+                    key={"game" + (index + 1)}>
                     <p>{game.word}</p>
                     <p></p>
                     {
@@ -129,18 +167,18 @@ export default function useAccount () {
                                 className="boardIcon"
                                 alt="Win"
                             /> :
-                        success === false ?
-                            <img
-                                src="No.svg"
-                                className="boardIcon"
-                                alt="Loss"
-                            /> :
-                        success === null &&
-                            <img
-                                src="Other.svg"
-                                className="boardIcon"
-                                alt="No result"
-                            />
+                            success === false ?
+                                <img
+                                    src="No.svg"
+                                    className="boardIcon"
+                                    alt="Loss"
+                                /> :
+                                success === null &&
+                                <img
+                                    src="Other.svg"
+                                    className="boardIcon"
+                                    alt="No result"
+                                />
                     }
                 </div>
             );
@@ -157,7 +195,7 @@ export default function useAccount () {
         handleUsername,
         handleAvatarChange,
         setHoverLable,
-        analizirajPodatke,
-        postPicFetch
+        postPicFetch,
+        fetchMyResults
     }
 }

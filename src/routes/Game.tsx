@@ -50,7 +50,7 @@ export default function Game() {
       </div>
       <p
         id="iskanaBeseda">
-        Iskana beseda je: {word?.definition} <b>{won !== lost && word?.word}</b>
+        Iskana beseda je: <b>{won !== lost && word?.word}</b>
       </p>
       <div className="lettersBox" inputMode='none'>
         {
