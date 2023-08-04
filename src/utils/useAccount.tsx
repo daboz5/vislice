@@ -160,25 +160,24 @@ export default function useAccount() {
                     key={"game" + (index + 1)}>
                     <p>{game.word}</p>
                     <p></p>
-                    {
-                        success === true ?
+                    {success === true ?
+                        <img
+                            src="Yes.svg"
+                            className="boardIcon"
+                            alt="Win"
+                        /> :
+                        success === false ?
                             <img
-                                src="Yes.svg"
+                                src="No.svg"
                                 className="boardIcon"
-                                alt="Win"
+                                alt="Loss"
                             /> :
-                            success === false ?
-                                <img
-                                    src="No.svg"
-                                    className="boardIcon"
-                                    alt="Loss"
-                                /> :
-                                success === null &&
-                                <img
-                                    src="Other.svg"
-                                    className="boardIcon"
-                                    alt="No result"
-                                />
+                            success === null &&
+                            <img
+                                src="Other.svg"
+                                className="boardIcon"
+                                alt="No result"
+                            />
                     }
                 </div>
             );

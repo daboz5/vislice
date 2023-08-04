@@ -1,62 +1,21 @@
+import { useState } from "react";
 import useAppStore from "../Store"
 import BulbIcon from "../assets/BulbIcon";
+import Chains from "../assets/Chains";
 import "./Help.css";
 
-export default function Help () {
+export default function Help() {
 
-    const { help, darkMode, switchHelp } = useAppStore();
-
-    const turnLightOn = () => {
-        const light = document.getElementById("lightSource");
-        if (light) {
-            light.style.opacity = "1";
-            light.style.backgroundColor = "rgb(255, 255, 255)"
-            light.style.boxShadow = "0 0 10px 5px white, inset 0 0 3px 1px yellow";
-        }
-    }
-    
-    const turnLightOff = () => {
-        const light = document.getElementById("lightSource");
-        if (light) {
-            light.style.opacity = "0.7";
-            light.style.backgroundColor = "rgb(0, 0, 50)";
-            light.style.boxShadow = "none";
-        }
-    }
-    
-    const handleBtnClick = () => {
-        const bulb = document.getElementById("bulb");
-        if (bulb && help) {
-            bulb.style.opacity = "1";
-            bulb.style.fill = "rgb(255, 255, 50)";
-        }
-        if (bulb && !help) {
-            bulb.style.opacity = "0.7";
-            darkMode ?
-                bulb.style.fill = "#000B60" :
-                bulb.style.fill = "#AFE2FF";
-        }
-        switchHelp();
-    }
+    const { help, switchHelp } = useAppStore();
+    const [on, setOn] = useState(false);
 
     return (
         <>
             <div
                 id="infoBtnBox"
-                onMouseEnter={() => {
-                    !help && turnLightOn()
-                }}
-                onMouseLeave={() => {
-                    !help && turnLightOff()
-                }}
-                onClick={() => handleBtnClick()}
-                style={darkMode ?
-                    {backgroundColor: "rgba(240, 248, 255, 0.6)"} :
-                    {backgroundColor: "aliceblue"}
-                }>
-                <BulbIcon />
-                <div id="lightSource">
-                </div>
+                className="swing">
+                <Chains />
+                <BulbIcon on={on} setOn={setOn} />
             </div>
 
             {help &&
@@ -64,10 +23,8 @@ export default function Help () {
                     <div
                         id="helpScreen"
                         onClick={() => {
-                            switchHelp()
-                            help ?
-                                turnLightOff() :
-                                turnLightOn()
+                            switchHelp();
+                            if (help) { setOn(false) }
                         }}>
                     </div>
                     <div className="helpMenu">
