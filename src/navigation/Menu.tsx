@@ -16,11 +16,15 @@ export default function Menu() {
   }, [user?.id, user?.profPic]);
 
   return <>
-    <div id="mainBox">
-      <Chains />
-      {btn}
-      <Chains />
-      {darkBtn}
+    <div id="mainBox" className="swingNav">
+      <div id="navAnimation">
+        <Chains />
+        {btn}
+        <div id="darkBtnAnimation">
+          <Chains />
+          {darkBtn}
+        </div>
+      </div>
     </div>
     {menuOpened &&
       <div className="Login">

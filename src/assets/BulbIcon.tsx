@@ -15,15 +15,19 @@ export default function BulbIcon(
 
   const classes = styles();
 
+  const handleClick = () => {
+    switchHelp();
+    help && !on && setOn(false);
+  }
+
   return (<>
     <svg
       id="a"
       onMouseEnter={() => { !help && setOn(true) }}
       onMouseLeave={() => { !help && setOn(false) }}
-      onClick={() => {
-        switchHelp()
-        help && !on && setOn(false)
-      }}
+      onClick={() => handleClick()}
+      onMouseDown={() => { document.getElementById("infoBtnBox")?.classList.remove("pull") }}
+      onMouseUp={() => { document.getElementById("infoBtnBox")?.classList.add("pull") }}
       data-name="Layer 1"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 183 277.1">

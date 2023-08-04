@@ -217,7 +217,9 @@ export default function useMenu() {
     const btn = (
         <div
             className="mainBtn"
-            onClick={() => handleBtnClick()}>
+            onClick={() => handleBtnClick()}
+            onMouseDown={() => { document.getElementById("navAnimation")?.classList.remove("pull") }}
+            onMouseUp={() => { document.getElementById("navAnimation")?.classList.add("pull") }}>
             <img
                 id="mainBtnImg"
                 src={
@@ -238,17 +240,18 @@ export default function useMenu() {
     const darkBtn = (
         <div
             id="darkBtn"
-            className="mainBtn"
-            onClick={() => handleDarkBtnClick()}>
+            onClick={() => handleDarkBtnClick()}
+            onMouseDown={() => { document.getElementById("darkBtnAnimation")?.classList.remove("pull") }}
+            onMouseUp={() => { document.getElementById("darkBtnAnimation")?.classList.add("pull") }}>
             <img
                 id="darkBtnImg"
                 src="Moon.svg"
+                style={{ opacity: darkMode ? "1" : "0" }}
                 alt="dark mode btn"
             />
             <img
                 id="lightBtnImg"
-                src="Sun.svg"
-                style={{ opacity: darkMode ? "0" : "1" }}
+                src="Sun2.svg"
                 alt="light mode btn"
             />
         </div>

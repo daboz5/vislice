@@ -49,3 +49,21 @@ a:hover {
 .buttonHide {
     display: none;
 }
+
+/*ANIMACIJA*/
+
+.pull {
+    animation: pull 0.5s ease-in-out;
+}
+
+@keyframes pull {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(10px);
+    }
+}

@@ -2,20 +2,20 @@
 
 #infoBtnBox {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  position: absolute;
-  top: 30px;
-  left: 3%;
-  height: 75px;
   width: 75px;
   transition: 0.3s;
-  z-index: 2;
 }
 
+#infoBtnBox .chains {
+  top: -15px;
+}
 
 #a {
+  position: relative;
   height: 60px;
+  top: -20px;
   transform: rotate(180deg);
   z-index: 3;
 }
@@ -24,8 +24,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: 30px;
+  position: relative;
+  top: -58px;
   height: 38px;
   width: 38px;
   border-radius: 50%;
@@ -120,12 +120,16 @@
 
 /*ANIMACIJA*/
 
-.swing {
-  animation: swing 5s ease infinite;
+.swingBulb {
+  position: absolute;
+  top: 5px;
+  left: 3%;
+  animation: swingBulb 5s ease infinite;
   transform-origin: center -50px;
+  z-index: 2;
 }
 
-@keyframes swing {
+@keyframes swingBulb {
 
   0%,
   100% {

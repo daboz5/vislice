@@ -11,11 +11,11 @@ export default function Help() {
 
     return (
         <>
-            <div
-                id="infoBtnBox"
-                className="swing">
-                <Chains />
-                <BulbIcon on={on} setOn={setOn} />
+            <div className="swingBulb">
+                <div id="infoBtnBox">
+                    <Chains />
+                    <BulbIcon on={on} setOn={setOn} />
+                </div>
             </div>
 
             {help &&

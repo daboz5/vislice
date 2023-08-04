@@ -86,6 +86,6 @@ export default function Game() {
         }
       </div>
 
-    </section>
+    </section >
   );
 }
