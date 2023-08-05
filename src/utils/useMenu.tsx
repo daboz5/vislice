@@ -12,6 +12,7 @@ export default function useMenu() {
         darkMode,
         menuOpened,
         setUser,
+        switchBulbOn,
         switchHelp,
         switchDarkMode,
         switchMenuState,
@@ -46,7 +47,10 @@ export default function useMenu() {
     }
 
     const handleBtnClick = () => {
-        if (help) { switchHelp() }
+        if (help) {
+            switchHelp();
+            switchBulbOn();
+        }
         storeData("menuOpened", !menuOpened);
         switchMenuState(!menuOpened);
     }

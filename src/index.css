@@ -3,33 +3,36 @@
 }
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-
+  font-family: Nunito, Helvetica, Arial, sans-serif;
+  font-weight: 700;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-}  
+}
 
 body {
   margin: 0;
-}  
+}
 
 @media only screen and (max-width: 650px) {
   #mainBox {
     right: 3%;
   }
+
   .accPage {
     flex-direction: column;
     justify-content: start;
     gap: 20px;
   }
+
   .letters {
     height: 25px;
     font-size: 16px;
     margin: 3px;
   }
+
   .image {
     max-width: 90vw;
   }
@@ -39,10 +42,12 @@ body {
   .informacije {
     font-size: 20px;
   }
+
   .letters {
     width: 17px;
     margin: 2px;
   }
+
   #uporabljeno {
     font-size: 20px;
   }
@@ -52,18 +57,22 @@ body {
   .informacije {
     font-size: 18px;
   }
+
   .menuInfoBox {
     font-size: 20px;
   }
+
   .letters {
     height: 24px;
     width: 14px;
     font-size: 15px;
     margin: 1px;
   }
+
   #uporabljeno {
     font-size: 18px;
   }
+
   .loginMenuBox {
     padding: 20px 50px;
   }

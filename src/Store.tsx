@@ -12,6 +12,7 @@ type State = {
     darkMode: boolean,
     panic: Panic,
     paniced: boolean,
+    bulbOn: boolean,
     help: boolean,
     game: Game,
     won: boolean,
@@ -29,6 +30,7 @@ type Action = {
     switchDarkMode(newMode: boolean): void,
     setPanic(newPanic: Panic): void,
     switchPaniced(): void,
+    switchBulbOn(): void,
     switchHelp(): void,
     setGame(newGame: Game): void,
     switchWon(): void,
@@ -91,7 +93,11 @@ const useAppStore = create<State & Action>((set) => ({
         paniced: !state.paniced
     })),
 
+    bulbOn: false,
     help: false,
+    switchBulbOn: () => set((state) => ({
+        bulbOn: !state.bulbOn
+    })),
     switchHelp: () => set((state) => ({
         help: !state.help
     })),

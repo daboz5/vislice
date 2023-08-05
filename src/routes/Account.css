@@ -6,7 +6,7 @@
     height: 100%;
     width: 100%;
     font-size: 23px;
-    font-weight: 600;
+    font-weight: 700;
     text-align: center;
 }
 
@@ -21,6 +21,7 @@
 
 h4 {
     font-size: 25px;
+    font-weight: 900;
     margin: 15px 0 0;
 }
 
@@ -62,7 +63,7 @@ input {
     margin: 10px auto 0;
     padding: 5px 10px;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.05em;
     border-radius: 5px;
 }
@@ -78,7 +79,7 @@ input {
 .info {
     margin: 5px;
     font-size: 23px;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .boardLine {
@@ -132,12 +133,12 @@ input {
 #pastGamesBox::-webkit-scrollbar-thumb {
     border-radius: 10px;
 }
-  
+
 .scrollDay::-webkit-scrollbar-thumb {
     box-shadow: inset 2px 3px 6px 2px rgb(77, 219, 255);
     background-color: rgb(0, 84, 186);
 }
-  
+
 .scrollNight::-webkit-scrollbar-thumb {
     box-shadow: inset 2px 3px 5px 2px rgb(255, 235, 120);
     background-color: rgb(160, 99, 0);

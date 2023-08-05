@@ -1,4 +1,3 @@
-import { useState } from "react";
 import useAppStore from "../Store"
 import BulbIcon from "../assets/BulbIcon";
 import Chains from "../assets/Chains";
@@ -6,15 +5,29 @@ import "./Help.css";
 
 export default function Help() {
 
-    const { help, switchHelp } = useAppStore();
-    const [on, setOn] = useState(false);
+    const {
+        darkMode,
+        help,
+        switchBulbOn,
+        switchHelp
+    } = useAppStore();
+
+    const style = {
+        boxShadow: darkMode ?
+            `2px -2px 2px 1px white,
+            2px -2px 10px 1px black,
+            -1px 2px 5px 2px black,
+            -2px 3px 3px 1px white` :
+            `1px -1px 3px 1px white,
+            -1px 2px 5px 2px black`
+    }
 
     return (
         <>
             <div className="swingBulb">
                 <div id="infoBtnBox">
                     <Chains />
-                    <BulbIcon on={on} setOn={setOn} />
+                    <BulbIcon />
                 </div>
             </div>
 
@@ -24,10 +37,10 @@ export default function Help() {
                         id="helpScreen"
                         onClick={() => {
                             switchHelp();
-                            if (help) { setOn(false) }
+                            if (help) { switchBulbOn() }
                         }}>
                     </div>
-                    <div className="helpMenu">
+                    <div className="helpMenu" style={style}>
                         <h3>Info</h3>
                         <div id="infoBox">
                             <p className="informacije">Vislice so otroška igra za vse starosti.</p>
@@ -42,7 +55,7 @@ export default function Help() {
                             <p className="informacije">Uživaj :)</p>
                         </div>
                     </div>
-                    <div id="zaslugaBox" className="helpMenu">
+                    <div id="zaslugaBox" className="helpMenu" style={style}>
                         <h3>Zasluge</h3>
                         <div className="zasluga">
                             <p>Spletna stran in kreator</p>

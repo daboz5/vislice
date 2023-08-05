@@ -64,6 +64,7 @@ export default function Game() {
 
       <button
         id="newWordBtn"
+        className="button"
         onClick={() => handleClick()}>
         Nova beseda
       </button>

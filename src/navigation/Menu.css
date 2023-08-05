@@ -9,19 +9,7 @@
     text-align: center;
 }
 
-/*SCREEN-BLUR*/
-
-.screen {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    background-color: rgba(150, 150, 150, 0.5);
-    -webkit-backdrop-filter: blur(3px);
-    backdrop-filter: blur(3px);
-    z-index: 2;
-}
-
-/*LOGIN-MENU MAIN BUTTON*/
+/*MAIN BUTTON*/
 
 #mainBox {
     position: absolute;
@@ -31,7 +19,7 @@
 }
 
 #mainBox .chains {
-    top: -10px;
+    top: -15px;
 }
 
 .mainBtn {
@@ -39,7 +27,7 @@
     justify-content: center;
     align-items: center;
     position: relative;
-    top: -14px;
+    top: -19px;
     height: 80px;
     width: 80px;
     overflow: hidden;
@@ -71,7 +59,7 @@
 }
 
 #darkBtnAnimation .chains {
-    top: -25px;
+    top: -31px;
 }
 
 #darkBtn {
@@ -101,16 +89,30 @@
     height: 97%;
 }
 
+/*SCREEN-BLUR*/
+
+.screen {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    height: calc(100% - 10px);
+    width: 100%;
+    filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
+    backdrop-filter: blur(1px);
+    z-index: 3;
+}
+
 /*LOGIN-MENU*/
 
-.loginMenuBox {
+#loginMenuBox {
     padding: 20px 70px;
     width: 400px;
     min-width: 250px;
-    border: 5px solid gold;
     border-radius: 15px;
-    background-color: rgb(140, 140, 140);
-    z-index: 2;
+    background-color: rgb(210, 210, 210);
+    z-index: 3;
 }
 
 .loginMenu {
@@ -127,13 +129,11 @@ h4 {
 .inputText {
     margin: 12px 0 0;
     font-size: 21px;
-    font-weight: 500;
 }
 
 .inputField {
     height: 35px;
     font-size: 18px;
-    font-weight: 600;
     letter-spacing: 0.05em;
     width: 100%;
     border-radius: 5px;
@@ -161,24 +161,23 @@ h4 {
 
 .error {
     margin: 5px auto 10px;
-    color: rgb(255, 50, 50);
-    font-size: 19px;
-    font-weight: 600;
+    color: rgb(200, 0, 0);
+    font-size: 20px;
+    font-weight: 900;
     text-align: left;
-    text-shadow: 0 0 3px black, 0 0 4px black, 0 0 5px black;
 }
 
 .popUp {
-    color: white;
-    font-size: 19px;
-    font-weight: 600;
-    text-shadow: 0 0 3px black, 0 0 4px black, 0 0 5px black;
+    margin: 5px auto 10px;
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+    font-weight: 900;
+    text-align: left;
 }
 
 /*USER INFO*/
 .menuInfoBox {
     font-size: 25px;
-    font-weight: 700;
     text-align: center;
     margin: 5px 0 10px;
 }

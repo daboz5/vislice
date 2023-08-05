@@ -1,11 +1,15 @@
 import { createUseStyles } from "react-jss";
 import useAppStore from "../Store";
 
-export default function BulbIcon(
-  { on, setOn }: { on: boolean, setOn: (data: boolean) => void }
-) {
+export default function BulbIcon() {
 
-  const { darkMode, help, switchHelp } = useAppStore();
+  const {
+    bulbOn,
+    help,
+    darkMode,
+    switchBulbOn,
+    switchHelp
+  } = useAppStore();
 
   const styles = createUseStyles({
     b: { fill: "rgb(50, 50, 50)" },
@@ -17,14 +21,14 @@ export default function BulbIcon(
 
   const handleClick = () => {
     switchHelp();
-    help && !on && setOn(false);
+    help && !bulbOn && switchBulbOn();
   }
 
   return (<>
     <svg
       id="a"
-      onMouseEnter={() => { !help && setOn(true) }}
-      onMouseLeave={() => { !help && setOn(false) }}
+      onMouseEnter={() => { !help && switchBulbOn() }}
+      onMouseLeave={() => { !help && switchBulbOn() }}
       onClick={() => handleClick()}
       onMouseDown={() => { document.getElementById("infoBtnBox")?.classList.remove("pull") }}
       onMouseUp={() => { document.getElementById("infoBtnBox")?.classList.add("pull") }}
@@ -56,7 +60,7 @@ export default function BulbIcon(
           backgroundColor: help ? "yellow" : darkMode ?
             "#000B60" :
             "#5EC4FF",
-          boxShadow: on ?
+          boxShadow: bulbOn ?
             "0 0 5px 2px gold, 0 0 15px 5px gold" :
             "none"
         }
@@ -65,10 +69,10 @@ export default function BulbIcon(
         id="lightSource"
         style={
           {
-            backgroundColor: on ?
+            backgroundColor: bulbOn ?
               "rgb(255, 255, 255)" :
               "rgb(0, 0, 50)",
-            boxShadow: on ?
+            boxShadow: bulbOn ?
               "0 0 10px 5px white, inset 0 0 3px 1px yellow" :
               "none"
           }
