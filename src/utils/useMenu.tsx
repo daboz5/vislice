@@ -40,7 +40,6 @@ export default function useMenu() {
 
 
     const handleReset = () => {
-        setUser(null);
         setMailErr(null);
         setPassErr(null);
         setServerError(null);
@@ -61,7 +60,6 @@ export default function useMenu() {
     }
 
     const cngMenuType = () => {
-        handleReset();
         menuType.regOpened ?
             setMenuType({
                 regOpened: false,
@@ -169,6 +167,7 @@ export default function useMenu() {
 
     const handleLogout = () => {
         handleReset();
+        setUser(null);
         removeData("token");
         handleBtnClick();
     }
@@ -184,7 +183,6 @@ export default function useMenu() {
         });
         handleBtnClick();
     }
-
 
     const fetchMyData = useCallback(async () => {
         const token = getData("token");
@@ -261,18 +259,7 @@ export default function useMenu() {
         </div>
     )
 
-    const boxShadowStyle = {
-        boxShadow: darkMode ?
-            `2px -2px 2px 1px white,
-            2px -2px 10px 1px black,
-            -1px 2px 5px 2px black,
-            -2px 3px 3px 1px white` :
-            `1px -1px 3px 1px white,
-            -1px 2px 5px 2px black`
-    }
-
     return {
-        boxShadowStyle,
         btn,
         darkBtn,
         loc,

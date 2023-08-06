@@ -16,16 +16,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 5px;
 }
 
 h4 {
     font-size: 25px;
     font-weight: 900;
     margin: 15px 0 0;
-}
-
-.changeAvatarBox {
-    margin: 10px 0 0;
 }
 
 .avatarBox {
@@ -47,11 +44,16 @@ h4 {
     max-height: 100%;
 }
 
+#picCngBtnBox {
+    display: flex;
+    gap: 15px;
+}
+
 input {
     display: block;
     height: 35px;
     width: 240px;
-    margin: 10px auto 0;
+    margin: 5px auto 0;
     padding: 5px 10px;
     font-size: 18px;
     font-weight: 700;

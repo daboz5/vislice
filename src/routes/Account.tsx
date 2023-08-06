@@ -34,59 +34,55 @@ export default function Account() {
             <div className="settingsBox">
 
                 <h4>Profilna slika</h4>
-                <div className="changeAvatarBox">
-                    <div className="avatarBox">
-                        {picPreview ?
-                            <img
-                                src={picPreview}
-                                alt="Slika profila"
-                            /> :
-                            <img
-                                src={user?.profPic ?
-                                    user.profPic :
-                                    "user-astronaut-solid.svg"
-                                }
-                                style={user?.profPic ?
-                                    {} :
-                                    {
-                                        maxWidth: "75%",
-                                        maxHeight: "75%"
-                                    }
-                                }
-                                alt="Nova slika profila"
-                            />
+                <div className="avatarBox">
+                    <img
+                        src={picPreview ?
+                            picPreview :
+                            user?.profPic ?
+                                user.profPic :
+                                "user-astronaut-solid.svg"
                         }
-                    </div>
-                    <div>
-                        <label
+                        style={picPreview ?
+                            {} :
+                            user?.profPic ?
+                                {} :
+                                { maxWidth: "75%", maxHeight: "75%" }
+                        }
+                        alt={picPreview ?
+                            "Nova slika profila" :
+                            "Slika profila"
+                        }
+                    />
+                </div>
+                <div id="picCngBtnBox">
+                    <label
+                        className="button"
+                        onMouseDown={(e) => handleBtnClickStyle(e.currentTarget, true)}
+                        onMouseUp={(e) => handleBtnClickStyle(e.currentTarget, false)}
+                        onMouseLeave={(e) => handleBtnClickStyle(e.currentTarget, false)}
+                        style={{ boxShadow: boxShadowStyleBtn, fontWeight: "800" }}
+                        htmlFor="picBtn">
+                        Izberi
+                        <input
+                            type="file"
+                            id="picBtn"
+                            className="buttonHide"
+                            onChange={(event) => handleAvatarChange(event.currentTarget.files![0])}
+                            accept="image/png, image/jpeg">
+                        </input>
+                    </label>
+                    {picPreview &&
+                        <button
                             className="button"
+                            onClick={() => postPicFetch(iFile!)}
                             onMouseDown={(e) => handleBtnClickStyle(e.currentTarget, true)}
                             onMouseUp={(e) => handleBtnClickStyle(e.currentTarget, false)}
                             onMouseLeave={(e) => handleBtnClickStyle(e.currentTarget, false)}
                             style={{ boxShadow: boxShadowStyleBtn }}
-                            htmlFor="picBtn">
-                            Izberi
-                            <input
-                                type="file"
-                                id="picBtn"
-                                className="buttonHide"
-                                onChange={(event) => handleAvatarChange(event.currentTarget.files![0])}
-                                accept="image/png, image/jpeg">
-                            </input>
-                        </label>
-                        {picPreview &&
-                            <button
-                                className="button"
-                                onClick={() => postPicFetch(iFile!)}
-                                onMouseDown={(e) => handleBtnClickStyle(e.currentTarget, true)}
-                                onMouseUp={(e) => handleBtnClickStyle(e.currentTarget, false)}
-                                onMouseLeave={(e) => handleBtnClickStyle(e.currentTarget, false)}
-                                style={{ boxShadow: boxShadowStyleBtn }}
-                                rel="noopener noreferrer">
-                                Potrdi
-                            </button>
-                        }
-                    </div>
+                            rel="noopener noreferrer">
+                            Potrdi
+                        </button>
+                    }
                 </div>
 
                 <h4>Ime računa</h4>
