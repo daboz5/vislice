@@ -41,7 +41,7 @@ export default function Help() {
                         }}>
                     </div>
                     <div className="helpMenu" style={style}>
-                        <h3>Info</h3>
+                        <h3 id="infoTitle">Info</h3>
                         <div id="infoBox">
                             <p className="informacije">Vislice so otroška igra za vse starosti.</p>
                             <p className="informacije"><b>Za zmago je potrebno uganiti vse črke v besedi, preden ti zmanjka življenj.</b></p>

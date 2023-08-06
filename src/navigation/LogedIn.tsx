@@ -12,10 +12,10 @@ export default function LogedIn() {
     return (
         <div
             className='loginMenu'>
-            <div
+            <h3
                 className='menuInfoBox'>
                 {user?.username}
-            </div>
+            </h3>
             <Link
                 className="button"
                 to={loc.to}
