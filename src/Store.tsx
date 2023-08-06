@@ -81,7 +81,7 @@ const useAppStore = create<State & Action>((set) => ({
     panic: {
         state: false,
         style: {
-            boxShadow: `inset 1px -1px 7px 4px black`,
+            boxShadow: `inset 1px -1px 7px 4px black, 0 0 3px 2px rgb(0, 150, 0)`,
             backgroundColor: "rgb(0, 220, 0)",
         }
     },

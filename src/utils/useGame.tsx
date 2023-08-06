@@ -230,7 +230,8 @@ export default function useGame() {
             {
                 state: !panic.state, style: {
                     boxShadow: panic.state ?
-                        `inset 1px -1px 7px 4px black` :
+                        `inset 1px -1px 7px 4px black,
+                        0 0 3px 2px rgb(0, 150, 0)` :
                         `inset 0 0 3px 3px black,
                         0 0 7px 3px red`,
                     backgroundColor: panic.state ?
