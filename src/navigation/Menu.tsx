@@ -9,14 +9,16 @@ import './Menu.css';
 
 export default function Menu() {
 
-  const { user, darkMode, menuOpened } = useAppStore();
+  const { user, menuOpened } = useAppStore();
   const {
     menuType,
     btn,
     darkBtn,
+    boxShadowStyle,
     handleBtnClick,
     cngMenuType
   } = useMenu();
+
 
   useEffect(() => {
   }, [user?.id, user?.profPic]);
@@ -40,15 +42,7 @@ export default function Menu() {
         </div>
         <div
           id="loginMenuBox"
-          style={{
-            boxShadow: darkMode ?
-              `2px -2px 2px 1px white,
-              2px -2px 10px 1px black,
-              -1px 2px 5px 2px black,
-              -2px 3px 3px 1px white` :
-              `1px -1px 3px 1px white,
-              -1px 2px 5px 2px black`
-          }}>
+          style={boxShadowStyle}>
           {(menuType.regOpened === true) ?
             <Register /> :
             (user) ?

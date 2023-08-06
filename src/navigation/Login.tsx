@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import useMenu from '../utils/useMenu';
 import useAppStore from '../Store';
+import useRoot from '../utils/useRoot';
 
-export default function Login () {
+export default function Login() {
 
   const {
     mailErr,
@@ -17,6 +18,8 @@ export default function Login () {
 
   const { serverError } = useAppStore();
 
+  const { boxShadowStyleBtnDef, handleBtnClickStyle } = useRoot();
+
   useEffect(() => {
     document.addEventListener("keydown", eventListener);
     return () => document.removeEventListener("keydown", eventListener);
@@ -28,45 +31,49 @@ export default function Login () {
       className="loginMenu">
       <h4>Vpis</h4>
       <p className='inputText'>Uporabniški email:</p>
-        <input
-          inputMode='email'
-          className='inputField inputEmail'
-          {...register("logEmail", {
-            required: true,
-            minLength: 3
-          })}
-        />
-        
-      <p className='inputText'>Geslo:</p>
-        <input
-          inputMode='none'
-          type={showPass ? "text" : "password"}
-          className='inputField inputPassword'
-          {...register("logPassword1", {
-            required: true,
-            minLength: 1
-          })}
-        />
-        <img
-          className='eye'
-          src={showPass ? "eye-opened.svg" : "eye-closed.svg"}
-          onClick={() => setShowPass(!showPass)}
-          alt="show-password-icon"
-        />
+      <input
+        inputMode='email'
+        className='inputField inputEmail'
+        {...register("logEmail", {
+          required: true,
+          minLength: 3
+        })}
+      />
 
-        {mailErr &&
-          <p className="error">
-            {mailErr}</p>}
-        {passErr &&
-          <p className="error">
-            {passErr}</p>}
-        {serverError &&
-          <p className="error">
-            {serverError}</p>}
+      <p className='inputText'>Geslo:</p>
+      <input
+        inputMode='none'
+        type={showPass ? "text" : "password"}
+        className='inputField inputPassword'
+        {...register("logPassword1", {
+          required: true,
+          minLength: 1
+        })}
+      />
+      <img
+        className='eye'
+        src={showPass ? "eye-opened.svg" : "eye-closed.svg"}
+        onClick={() => setShowPass(!showPass)}
+        alt="show-password-icon"
+      />
+
+      {mailErr &&
+        <p className="error">
+          {mailErr}</p>}
+      {passErr &&
+        <p className="error">
+          {passErr}</p>}
+      {serverError &&
+        <p className="error">
+          {serverError}</p>}
 
       <button
         type="submit"
         className="button loginBtn"
+        onMouseDown={(e) => handleBtnClickStyle(e.currentTarget, true)}
+        onMouseUp={(e) => handleBtnClickStyle(e.currentTarget, false, true)}
+        onMouseLeave={(e) => handleBtnClickStyle(e.currentTarget, false, true)}
+        style={{ boxShadow: boxShadowStyleBtnDef }}
         rel="noopener noreferrer">
         Vpiši me
       </button>

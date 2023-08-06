@@ -23,6 +23,7 @@ h3 {
 
 p {
   font-size: 22px;
+  font-weight: 800;
 }
 
 /*PANIC BTN*/
@@ -57,14 +58,14 @@ p {
 /*WORD*/
 
 #iskanaBeseda {
-  margin: 13px 0 15px;
+  margin: 15px 0 5px;
 }
 
 .lettersBox {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50px;
+  height: 70px;
   padding: 3px 5px;
   overflow-y: auto;
 }
@@ -80,6 +81,8 @@ p {
 }
 
 #defBox {
+  display: flex;
+  align-items: center;
   height: 100%;
 }
 
@@ -92,21 +95,11 @@ p {
   height: 30px;
   width: 20px;
   font-size: 20px;
-  font-weight: 700;
   margin: 5px;
 }
 
 #newWordBtn {
-  width: max-content;
-  font-size: 20px;
-  margin: 15px 0 0;
-  border-radius: 7px;
-  padding: 5px 10px;
-  transition: 0.2s;
-}
-
-#newWordBtn:hover {
-  box-shadow: 0 0 5px 2px black;
+  margin: 5px 0;
 }
 
 .image {

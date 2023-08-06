@@ -62,6 +62,10 @@ body {
     font-size: 20px;
   }
 
+  #iskanaBeseda {
+    font-size: 20px;
+  }
+
   .letters {
     height: 24px;
     width: 14px;
@@ -71,6 +75,10 @@ body {
 
   #uporabljeno {
     font-size: 18px;
+  }
+
+  #gameVisuals h3 {
+    font-size: 25px;
   }
 
   .loginMenuBox {

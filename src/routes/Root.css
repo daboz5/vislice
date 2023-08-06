@@ -15,20 +15,21 @@
 }
 
 .button {
-    display: inline-block;
+    cursor: pointer;
     margin: 10px auto;
     padding: 6px 13px;
-    font-family: sans-serif;
+    color: black;
     font-size: 19px;
     font-weight: 700;
     text-decoration: none;
-    border: 3px solid black;
-    border-radius: 6px;
+    border: 0px;
+    border-radius: 7px;
     background-color: ghostwhite;
+    transition: 0.2s;
 }
 
 .button:hover {
-    box-shadow: 0 0 2px 1px black;
+    border-radius: 10px 0px 10px 0;
 }
 
 .button-subtle {
@@ -37,7 +38,6 @@
 }
 
 .button-subtle:hover {
-    box-shadow: 0 0 0;
     -webkit-text-stroke: 0.3px black;
 }
 

@@ -3,6 +3,7 @@ import useAppStore from '../Store';
 import useGame from '../utils/useGame';
 import Help from '../game/Help';
 import './Game.css';
+import useRoot from '../utils/useRoot';
 
 export default function Game() {
 
@@ -14,6 +15,11 @@ export default function Game() {
     won,
     lost
   } = useAppStore();
+
+  const {
+    boxShadowStyleBtn,
+    handleBtnClickStyle
+  } = useRoot();
 
   const {
     gameOn,
@@ -65,16 +71,20 @@ export default function Game() {
       <button
         id="newWordBtn"
         className="button"
-        onClick={() => handleClick()}>
+        onClick={() => handleClick()}
+        onMouseDown={(e) => handleBtnClickStyle(e.currentTarget, true)}
+        onMouseUp={(e) => handleBtnClickStyle(e.currentTarget, false)}
+        onMouseLeave={(e) => handleBtnClickStyle(e.currentTarget, false)}
+        style={{ boxShadow: boxShadowStyleBtn }}>
         Nova beseda
       </button>
 
       {
         won || lost ?
-          <p id="uporabljeno">Verjetnost zmage je bila {probability()}</p> :
+          <p id="uporabljeno">Verjetnost slepe zmage je bila {probability()}</p> :
           <p id="uporabljeno">Že uporabljeno: <b>{used}</b></p>
       }
-      <div>
+      <div id="gameVisuals">
         <img
           src={`Vislice_${game.life}${darkMode ? "-dark" : ""}.png`}
           className="image"

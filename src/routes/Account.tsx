@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import useAppStore from "../Store";
 import useAccount from "../utils/useAccount"
+import useRoot from "../utils/useRoot";
 import "./Account.css"
 
 export default function Account() {
@@ -12,14 +13,17 @@ export default function Account() {
         ratio,
         iFile,
         picPreview,
-        hoverLabel,
         setInputUsername,
-        setHoverLable,
         handleUsername,
         handleAvatarChange,
         postPicFetch,
         fetchMyResults
     } = useAccount();
+
+    const {
+        boxShadowStyleBtn,
+        handleBtnClickStyle
+    } = useRoot();
 
     useEffect(() => {
         fetchMyResults();
@@ -35,10 +39,6 @@ export default function Account() {
                         {picPreview ?
                             <img
                                 src={picPreview}
-                                style={{
-                                    maxWidth: "100%",
-                                    maxHeight: "100%"
-                                }}
                                 alt="Slika profila"
                             /> :
                             <img
@@ -47,10 +47,7 @@ export default function Account() {
                                     "user-astronaut-solid.svg"
                                 }
                                 style={user?.profPic ?
-                                    {
-                                        maxWidth: "100%",
-                                        maxHeight: "100%"
-                                    } :
+                                    {} :
                                     {
                                         maxWidth: "75%",
                                         maxHeight: "75%"
@@ -63,9 +60,10 @@ export default function Account() {
                     <div>
                         <label
                             className="button"
-                            onMouseEnter={() => { setHoverLable(true) }}
-                            onMouseLeave={() => { setHoverLable(false) }}
-                            style={hoverLabel ? { boxShadow: "0 0 3px" } : {}}
+                            onMouseDown={(e) => handleBtnClickStyle(e.currentTarget, true)}
+                            onMouseUp={(e) => handleBtnClickStyle(e.currentTarget, false)}
+                            onMouseLeave={(e) => handleBtnClickStyle(e.currentTarget, false)}
+                            style={{ boxShadow: boxShadowStyleBtn }}
                             htmlFor="picBtn">
                             Izberi
                             <input
@@ -80,8 +78,11 @@ export default function Account() {
                             <button
                                 className="button"
                                 onClick={() => postPicFetch(iFile!)}
-                                rel="noopener noreferrer"
-                                style={{ marginLeft: "10px" }}>
+                                onMouseDown={(e) => handleBtnClickStyle(e.currentTarget, true)}
+                                onMouseUp={(e) => handleBtnClickStyle(e.currentTarget, false)}
+                                onMouseLeave={(e) => handleBtnClickStyle(e.currentTarget, false)}
+                                style={{ boxShadow: boxShadowStyleBtn }}
+                                rel="noopener noreferrer">
                                 Potrdi
                             </button>
                         }
@@ -97,6 +98,10 @@ export default function Account() {
                 <button
                     className="button"
                     onClick={() => handleUsername()}
+                    onMouseDown={(e) => handleBtnClickStyle(e.currentTarget, true)}
+                    onMouseUp={(e) => handleBtnClickStyle(e.currentTarget, false)}
+                    onMouseLeave={(e) => handleBtnClickStyle(e.currentTarget, false)}
+                    style={{ boxShadow: boxShadowStyleBtn }}
                     rel="noopener noreferrer">
                     Spremeni
                 </button>
