@@ -60,7 +60,7 @@ export default function Account() {
                         onMouseDown={(e) => handleBtnClickStyle(e.currentTarget, true)}
                         onMouseUp={(e) => handleBtnClickStyle(e.currentTarget, false)}
                         onMouseLeave={(e) => handleBtnClickStyle(e.currentTarget, false)}
-                        style={{ boxShadow: boxShadowStyleBtn, fontWeight: "800" }}
+                        style={{ boxShadow: boxShadowStyleBtn }}
                         htmlFor="picBtn">
                         Izberi
                         <input
@@ -120,10 +120,12 @@ export default function Account() {
                     Porazi: {ratio.lost}
                 </div>
                 <hr className="boardLine" />
-                <div
-                    id="pastGamesBox"
-                    className={!darkMode ? "scrollDay" : "scrollNight"}>
-                    {pastGames}
+                <div id="pastGamesBox">
+                    <div
+                        id="pastGames"
+                        className={!darkMode ? "scrollDay" : "scrollNight"}>
+                        {pastGames}
+                    </div>
                 </div>
             </div>
         </section>

@@ -131,17 +131,8 @@ h4 {
     font-size: 21px;
 }
 
-.inputField {
-    height: 35px;
-    font-size: 18px;
-    letter-spacing: 0.05em;
-    width: 100%;
-    border-radius: 5px;
-}
-
 .inputField[type="password"] {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.25em;
 }
 
 .eye {

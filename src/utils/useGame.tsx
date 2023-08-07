@@ -236,7 +236,7 @@ export default function useGame() {
                         0 0 7px 3px red`,
                     backgroundColor: panic.state ?
                         "rgb(0, 220, 0)" :
-                        "rgb(255, 0, 0)"
+                        "rgb(230, 0, 0)"
                 }
             });
         if (!paniced) { switchPaniced() }

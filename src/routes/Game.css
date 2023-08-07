@@ -48,6 +48,10 @@ b {
   transition: 0.5s;
 }
 
+#panicBtn:hover {
+  filter: brightness(1.2);
+}
+
 /*LIFE*/
 
 #lifeBox {
@@ -69,6 +73,7 @@ b {
 .lettersBox {
   display: flex;
   justify-content: center;
+  font-weight: 800;
   align-items: center;
   height: 70px;
   padding: 3px 5px;

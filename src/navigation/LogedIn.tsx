@@ -23,7 +23,7 @@ export default function LogedIn() {
                 onMouseDown={(e) => handleBtnClickStyle(e.currentTarget, true)}
                 onMouseUp={(e) => handleBtnClickStyle(e.currentTarget, false, true)}
                 onMouseLeave={(e) => handleBtnClickStyle(e.currentTarget, false, true)}
-                style={{ boxShadow: boxShadowStyleBtnDef, fontWeight: "800" }}
+                style={{ boxShadow: boxShadowStyleBtnDef }}
                 rel="noopener noreferrer">
                 {loc.name}
             </Link>
@@ -34,7 +34,7 @@ export default function LogedIn() {
                 onMouseDown={(e) => handleBtnClickStyle(e.currentTarget, true)}
                 onMouseUp={(e) => handleBtnClickStyle(e.currentTarget, false, true)}
                 onMouseLeave={(e) => handleBtnClickStyle(e.currentTarget, false, true)}
-                style={{ boxShadow: boxShadowStyleBtnDef, fontWeight: "800" }}
+                style={{ boxShadow: boxShadowStyleBtnDef }}
                 rel="noopener noreferrer">
                 Izpiši me
             </Link>
