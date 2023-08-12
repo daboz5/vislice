@@ -4,6 +4,7 @@ import useGame from '../utils/useGame';
 import Help from '../game/Help';
 import './Game.css';
 import useRoot from '../utils/useRoot';
+import Signal from '../assets/Signal';
 
 export default function Game() {
 
@@ -26,6 +27,7 @@ export default function Game() {
     found,
     used,
     napis,
+    loading,
     handlePanicBtn,
     handleClick,
     eventListener,
@@ -35,7 +37,7 @@ export default function Game() {
   useEffect(() => {
     document.addEventListener("keydown", eventListener);
     return () => document.removeEventListener("keydown", eventListener);
-  }, [eventListener]);
+  }, [eventListener, loading]);
 
   return (
     <section className="Game">
@@ -76,7 +78,13 @@ export default function Game() {
         onMouseUp={(e) => handleBtnClickStyle(e.currentTarget, false)}
         onMouseLeave={(e) => handleBtnClickStyle(e.currentTarget, false)}
         style={{ boxShadow: boxShadowStyleBtn }}>
-        Nova beseda
+        {loading ?
+          <>
+            Iščem
+            <Signal />
+          </> :
+          "Nova beseda"
+        }
       </button>
 
       {

@@ -103,6 +103,7 @@ export default function useGame() {
 
     const [reported, setReported] = useState(false);
     const [gameOn, setGameOn] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const { getData } = useLocalStorage();
     const menuOpened = getData("menuOpened");
@@ -313,6 +314,7 @@ export default function useGame() {
             headers: { "ngrok-skip-browser-warning": "true" },
             redirect: 'follow',
         };
+        setLoading(true);
         await fetch(apiURL + "/words/random", requestOptions)
             .then(response => response.json())
             .then((result) => {
@@ -357,9 +359,11 @@ export default function useGame() {
                     setServerConnectionError(false);
                     setGame(newGame)
                 }
+                setLoading(false);
             }
             )
             .catch(error => {
+                setLoading(false);
                 console.log(error);
             });
     }
@@ -370,6 +374,7 @@ export default function useGame() {
         used,
         menuOpened,
         napis,
+        loading,
         handlePanicBtn,
         handleClick,
         eventListener,
