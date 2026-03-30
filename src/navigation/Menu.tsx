@@ -2,20 +2,22 @@ import { useEffect } from "react";
 import useAppStore from '../Store';
 import useMenu from '../utils/useMenu';
 import Login from './Login';
-import Register from './Register';
 import LogedIn from './LogedIn';
 import Chains from '../assets/Chains';
 import './Menu.css';
 
 export default function Menu() {
 
-  const { user, darkMode, menuOpened } = useAppStore();
   const {
-    menuType,
+    user,
+    darkMode,
+    menuOpened,
+  } = useAppStore();
+
+  const {
     btn,
     darkBtn,
     handleBtnClick,
-    cngMenuType
   } = useMenu();
 
 
@@ -49,18 +51,10 @@ export default function Menu() {
             -2px 3px 3px 1px white` :
               `1px -1px 3px 1px white,
             -1px 2px 5px 2px black`}}>
-          {(menuType.regOpened === true) ?
-            <Register /> :
-            (user) ?
-              <LogedIn /> :
-              <Login />
+          {(user) ?
+            <LogedIn /> :
+            <Login />
           }
-          <button
-            className="button button-subtle"
-            onClick={() => cngMenuType()}
-            rel="noopener noreferrer">
-            {menuType.string}
-          </button>
         </div>
       </div>}
   </>

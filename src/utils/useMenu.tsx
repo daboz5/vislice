@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 import useAppStore from '../Store';
 import useLocalStorage from '../utils/useLocalStorage';
 import apiURL from './api_url';
+import { useQuery } from '@tanstack/react-query';
 
 export default function useMenu() {
 
@@ -11,24 +12,32 @@ export default function useMenu() {
         help,
         darkMode,
         menuOpened,
+        menuType,
+        switchMenuType,
         setUser,
         switchBulbOn,
         switchHelp,
         switchDarkMode,
         switchMenuState,
         setServerError,
-        confAccCreation
     } = useAppStore();
 
     const { storeData, removeData, getData } = useLocalStorage();
-    const { register, handleSubmit } = useForm<FieldValues>();
+    const { register, reset, handleSubmit } = useForm<FieldValues>({
+        defaultValues: {
+            logEmail: "",
+            logPassword1: "",
+            logPassword2: ""
+        }
+    });
     const [passErr, setPassErr] = useState<JSX.Element | null>(null);
     const [mailErr, setMailErr] = useState<JSX.Element | null>(null);
+    const [fetchData, setFetchData] = useState({
+        email: "",
+        password: ""
+    }
+    );
     const [showPass, setShowPass] = useState(false);
-    const [menuType, setMenuType] = useState({
-        regOpened: false,
-        string: <>Potrebuješ nov račun? Klikni tukaj.</>
-    });
     const [loc, setLoc] = useState({
         to: window.location.pathname === "/" ?
             "account" :
@@ -38,11 +47,14 @@ export default function useMenu() {
             "Vislice",
     });
 
-
     const handleReset = () => {
         setMailErr(null);
         setPassErr(null);
         setServerError(null);
+        setFetchData({
+            email: "",
+            password: ""
+        })
     }
 
     const handleBtnClick = () => {
@@ -57,18 +69,6 @@ export default function useMenu() {
     const handleDarkBtnClick = () => {
         storeData("darkMode", !darkMode);
         switchDarkMode(!darkMode);
-    }
-
-    const cngMenuType = () => {
-        menuType.regOpened ?
-            setMenuType({
-                regOpened: false,
-                string: <>Potrebuješ nov račun? Klikni tukaj.</>
-            }) :
-            setMenuType({
-                regOpened: true,
-                string: <>Že imaš račun? Klikni tukaj.</>
-            });
     }
 
     const eventListener = (event: KeyboardEvent) => {
@@ -104,16 +104,27 @@ export default function useMenu() {
             setPassErr(passwordErr);
             return;
         }
-        if (!data.logPassword2) {
-            signFetch("/auth/signin", data.logEmail, data.logPassword1);
-        } else {
-            signFetch("/auth/signup", data.logEmail, data.logPassword1);
-        }
+        signFetchFn({
+            email: data.logEmail,
+            password: data.logPassword1
+        })
+        // if (!data.logPassword2) {
+        //     setFetchData({
+        //         email: data.logEmail,
+        //         password: data.logPassword1
+        //     });
+        // } else {
+        //     setFetchData({
+        //         email: data.logEmail,
+        //         password: data.logPassword1
+        //     });
+        // }
     };
 
-    const signFetch = async (path: string, emailData: string, passwordData: string) => {
+    const signFetchFn = async (formData) => {
+        const path = menuType ? "/auth/signup" : "/auth/signin"
         const myHeaders = { "Content-Type": "application/json" }
-        const myBody = JSON.stringify({ "email": emailData, "password": passwordData });
+        const myBody = JSON.stringify({ "email": formData.email, "password": formData.password });
 
         const requestOptions: RequestInit = {
             method: 'POST',
@@ -122,47 +133,51 @@ export default function useMenu() {
             redirect: 'follow',
         };
 
+        console.log("here", formData)
         await fetch(apiURL + path, requestOptions)
             .then(response => response.json())
             .then((result) => {
+                console.log(result)
                 if (result.message === "Email in use") {
-                    setServerError(<>Email je že v uporabi, izberite drugega.</>)
+                    throw new Error("Email je že v uporabi, izberite drugega.")
                 } else if (result.error) {
-                    throw new Error(
-                        result.message ||
-                        setServerError(<>Nekaj je šlo narobe, poskusite kasneje.</>)
-                    )
+                    throw new Error(result.error)
                 } else if (path === "/auth/signin") {
                     const newToken = result.access_token;
                     storeData("token", newToken);
                     fetchMyData();
                 } else if (path === "/auth/signup") {
-                    confAccCreation(<>
-                        Račun je bil uspešno ustvarjen.<br />
-                        Sedaj se lahko prijaviš.
-                    </>);
+                    switchMenuType();
                 }
             })
-            .catch(error => {
-                let sloError = <></>;
-                switch (error.message) {
-                    case ("Invalid email or password"):
-                        sloError = <>Email ali geslo sta napačna.</>
-                        break
-                    case ("User not found"):
-                        sloError = <>Email ali geslo sta napačna.</>
-                        break
-                    case ("Email in use"):
-                        sloError = <>Email je že v uporabi.</>
-                        break
-                    default:
-                        sloError = <>
-                            Nekaj je šlo narobe.<br />
-                            Poskusite kasneje ali nas opozorite o napaki.
-                        </>
-                }
-                setServerError(sloError);
-            })
+    }
+
+    const { isInitialLoading, refetch, isError, error } = useQuery({
+        queryKey: ["sign"],
+        queryFn: () => signFetchFn,
+        enabled: false
+    })
+
+    if (isError) {
+        console.log(isError, error)
+        let sloError = <></>;
+        switch (error) {
+            case ("Invalid email or password"):
+                sloError = <>Email ali geslo sta napačna.</>
+                break
+            case ("User not found"):
+                sloError = <>Email ali geslo sta napačna.</>
+                break
+            case ("Email in use"):
+                sloError = <>Email je že v uporabi.</>
+                break
+            default:
+                sloError = <>
+                    Nekaj je šlo narobe.<br />
+                    Poskusite kasneje ali nas opozorite o napaki.
+                </>
+        }
+        setServerError(sloError);
     }
 
     const handleLogout = () => {
@@ -265,15 +280,16 @@ export default function useMenu() {
         loc,
         mailErr,
         passErr,
-        menuType,
         showPass,
+        isInitialLoading,
+        reset,
+        handleReset,
+        onSubmit,
         setShowPass,
         handleLocChange,
         handleBtnClick,
-        cngMenuType,
         handleLogout,
         handleSubmit,
-        onSubmit,
         register,
         eventListener,
         fetchMyData,

@@ -107,8 +107,8 @@
 /*LOGIN-MENU*/
 
 #loginMenuBox {
-    padding: 20px 70px;
-    width: 400px;
+    padding: 20px 70px 30px;
+    width: 500px;
     min-width: 250px;
     border-radius: 15px;
     background-color: rgb(210, 210, 210);
@@ -121,17 +121,15 @@
     margin: 0 auto;
 }
 
-h4 {
-    margin: 5px auto 15px;
+.loginMenu h4 {
     font-size: 27px;
 }
 
-.inputText {
-    margin: 12px 0 0;
-    font-size: 21px;
+.loginMenu p {
+    margin: 20px 0 0;
 }
 
-.inputField[type="password"] {
+.loginMenu input[type="password"] {
     letter-spacing: 0.25em;
 }
 
@@ -139,7 +137,7 @@ h4 {
     max-width: 30px;
     color: "#000000";
     font-size: 18px;
-    margin: 8px auto 10px;
+    margin: 10px auto;
     transition: 0.3s;
 }
 
@@ -151,19 +149,15 @@ h4 {
 /*POPUPs*/
 
 .error {
-    margin: 5px auto 10px;
+    margin: 10px auto 0;
     color: rgb(200, 0, 0);
     font-size: 20px;
     font-weight: 900;
     text-align: left;
 }
 
-.popUp {
-    margin: 5px auto 10px;
-    color: rgb(255, 255, 255);
-    font-size: 20px;
-    font-weight: 900;
-    text-align: left;
+.serverError {
+    margin: 5px 0 10px;
 }
 
 /*USER INFO*/

@@ -6,9 +6,9 @@ type State = {
     word: Word | null,
     guesses: Guess[] | [],
     menuOpened: boolean,
+    menuType: boolean,
     serverError: JSX.Element | null,
     serverConnectionError: boolean,
-    accConfirm: JSX.Element | null,
     darkMode: boolean,
     panic: Panic,
     paniced: boolean,
@@ -24,9 +24,9 @@ type Action = {
     setWord(newWord: Word): void,
     setGuesses(newGuesses: Guess[]): void,
     switchMenuState(menuState: boolean): void,
+    switchMenuType(): void,
     setServerError(newError: JSX.Element | null): void,
     setServerConnectionError(newError: boolean): void,
-    confAccCreation(message: JSX.Element | null): void,
     switchDarkMode(newMode: boolean): void,
     setPanic(newPanic: Panic): void,
     switchPaniced(): void,
@@ -58,6 +58,11 @@ const useAppStore = create<State & Action>((set) => ({
         menuOpened: menuState
     })),
 
+    menuType: false,
+    switchMenuType: () => set((state) => ({
+        menuType: !state.menuType
+    })),
+
     serverError: null,
     setServerError: (newError) => set(() => ({
         serverError: newError
@@ -66,11 +71,6 @@ const useAppStore = create<State & Action>((set) => ({
     serverConnectionError: false,
     setServerConnectionError: (newState) => set(() => ({
         serverConnectionError: newState
-    })),
-
-    accConfirm: null,
-    confAccCreation: (message) => set(() => ({
-        accConfirm: message
     })),
 
     darkMode: false,

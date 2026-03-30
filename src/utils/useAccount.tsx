@@ -107,7 +107,6 @@ export default function useAccount() {
             });
     }
 
-
     const fetchMyResults = useCallback(async () => {
         const token = getData("token");
         if (!token) { return }

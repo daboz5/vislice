@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import useLocalStorage from '../utils/useLocalStorage';
 import useAppStore from '../Store';
 import apiURL from './api_url';
-import { Word } from '../type';
 
 const probArr = [
     {
@@ -91,19 +90,17 @@ export default function useGame() {
         darkMode,
         panic,
         paniced,
-        setWord,
         setGame,
         setPanic,
         switchPaniced,
         switchWon,
         switchLost,
         setServerError,
-        setServerConnectionError
     } = useAppStore();
+
 
     const [reported, setReported] = useState(false);
     const [gameOn, setGameOn] = useState(false);
-    const [loading, setLoading] = useState(false);
 
     const { getData } = useLocalStorage();
     const menuOpened = getData("menuOpened");
@@ -243,19 +240,6 @@ export default function useGame() {
         if (!paniced) { switchPaniced() }
     }
 
-    const handleClick = async () => {
-        if (!reported) {
-            handleWordEnd(false);
-        } else {
-            setReported(false);
-        }
-        await fetchNewWord();
-        if (won) { switchWon() }
-        if (lost) { switchLost() }
-        if (paniced && !panic.state) { switchPaniced() }
-        !gameOn && setGameOn(true);
-    }
-
     const found = game.found.length > 1 &&
         game.found.map(
             (el, index) => {
@@ -308,77 +292,17 @@ export default function useGame() {
         }
     }
 
-    const fetchNewWord = async () => {
-        const requestOptions: RequestInit = {
-            method: 'GET',
-            headers: { "ngrok-skip-browser-warning": "true" },
-            redirect: 'follow',
-        };
-        setLoading(true);
-        await fetch(apiURL + "/words/random", requestOptions)
-            .then(response => response.json())
-            .then((result) => {
-                if (result.error) {
-                    throw new Error(result.message);
-                } else {
-                    if (result.definition) {
-                        const listDef = result.definition;
-                        const newDefStart = listDef[0].toUpperCase();
-                        let newDef = listDef
-                            .replace(listDef[0], newDefStart)
-                            .replaceAll(/[1-9]/g, "")
-                        if (newDef[newDef.length - 1] === " ") {
-                            newDef = newDef.slice(0, newDef.length - 1);
-                        }
-                        if (newDef[newDef.length - 1] === "," || newDef[newDef.length - 1] === ";" || newDef[newDef.length - 1] === ":") {
-                            newDef = newDef.slice(0, newDef.length - 1);
-                        }
-                        if (newDef[newDef.length - 1] === " ") {
-                            newDef = newDef.slice(0, newDef.length - 1);
-                        }
-                        newDef = newDef + "."
-                        const newWord: Word = {
-                            id: result.id,
-                            word: result.normalizedWord,
-                            definition: newDef
-                        };
-                        setWord(newWord);
-                    } else {
-                        const newWord: Word = {
-                            id: result.id,
-                            word: result.normalizedWord,
-                            definition: "Definicija ni na voljo."
-                        };
-                        setWord(newWord);
-                    }
-                    const newGame = {
-                        life: 7,
-                        tried: "",
-                        found: result.word.split("").map(() => " ")
-                    }
-                    setServerConnectionError(false);
-                    setGame(newGame)
-                }
-                setLoading(false);
-            }
-            )
-            .catch(error => {
-                setLoading(false);
-                console.log(error);
-            });
-    }
-
     return {
+        reported,
         gameOn,
         found,
         used,
-        menuOpened,
         napis,
-        loading,
+        setReported,
+        setGameOn,
         handlePanicBtn,
-        handleClick,
         eventListener,
         probability,
-        fetchNewWord
+        handleWordEnd,
     };
 }

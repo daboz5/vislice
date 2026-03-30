@@ -49,26 +49,6 @@ h4 {
     gap: 15px;
 }
 
-input {
-    display: flex;
-    align-items: center;
-    height: 45px;
-    width: 100%;
-    font-size: 20px;
-    font-weight: 700;
-    text-align: center;
-    letter-spacing: 0.05em;
-    margin-top: 5px;
-    border: 2px solid rgb(100, 100, 100);
-    border-radius: 5px;
-    padding: 0 15px;
-    outline: none;
-}
-
-input:focus {
-    border: 2px solid rgb(50, 50, 50);
-}
-
 /*INFO*/
 
 .infoBox {

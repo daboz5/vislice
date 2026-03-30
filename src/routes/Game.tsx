@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 import useAppStore from '../Store';
 import useGame from '../utils/useGame';
 import Help from '../game/Help';
+import NewWordBtn from '../game/NewWordBtn';
 import './Game.css';
-import useRoot from '../utils/useRoot';
-import Signal from '../assets/Signal';
 
 export default function Game() {
 
@@ -18,18 +17,11 @@ export default function Game() {
   } = useAppStore();
 
   const {
-    boxShadowStyleBtn,
-    handleBtnClickStyle
-  } = useRoot();
-
-  const {
     gameOn,
     found,
     used,
     napis,
-    loading,
     handlePanicBtn,
-    handleClick,
     eventListener,
     probability
   } = useGame();
@@ -37,7 +29,7 @@ export default function Game() {
   useEffect(() => {
     document.addEventListener("keydown", eventListener);
     return () => document.removeEventListener("keydown", eventListener);
-  }, [eventListener, loading]);
+  }, [eventListener]);
 
   return (
     <section className="Game">
@@ -70,22 +62,7 @@ export default function Game() {
         }
       </div>
 
-      <button
-        id="newWordBtn"
-        className="button"
-        onClick={() => handleClick()}
-        onMouseDown={(e) => handleBtnClickStyle(e.currentTarget, true)}
-        onMouseUp={(e) => handleBtnClickStyle(e.currentTarget, false)}
-        onMouseLeave={(e) => handleBtnClickStyle(e.currentTarget, false)}
-        style={{ boxShadow: boxShadowStyleBtn }}>
-        {loading ?
-          <>
-            Iščem
-            <Signal />
-          </> :
-          "Nova beseda"
-        }
-      </button>
+      <NewWordBtn />
 
       {
         won || lost ?
@@ -99,8 +76,10 @@ export default function Game() {
           alt={`Preostaja ${game.life} življenja`}
         />
         {
-          game.life > 0 && napis.action ? napis.action :
-            lost && napis.lost ? napis.lost :
+          game.life > 0 && napis.action ?
+            napis.action :
+            lost && napis.lost ?
+              napis.lost :
               won && napis.won
         }
       </div>
